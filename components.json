@@ -1,0 +1,290 @@
+[
+  {
+    "id": "navbar",
+    "name": "捲動變玻璃導覽列",
+    "cat": "導覽",
+    "desc": "頂部導覽列，往下捲動後變成半透明毛玻璃並出現細線；手機版收成選單按鈕，點開為全寬面板。",
+    "source": "參考 shadcn/ui navigation-menu 與 21st 熱門導覽列，改寫為原生 HTML",
+    "use": "通用",
+    "height": 420
+  },
+  {
+    "id": "sidebar",
+    "name": "後台側邊欄",
+    "cat": "導覽",
+    "desc": "後台或工具頁的左側選單，分組、目前頁面標示、數字提醒；桌機可收合成圖示列，手機變成從左滑出的抽屜。",
+    "source": "參考 shadcn/ui sidebar-07 區塊，改寫為原生 HTML",
+    "use": "自用",
+    "height": 560
+  },
+  {
+    "id": "hero-split",
+    "name": "左右分欄主視覺",
+    "cat": "主視覺",
+    "desc": "左邊大標題與一個主要按鈕，右邊放「實際畫面」面板（這裡示範教學步驟視窗），取代置中標題＋三張卡片的罐頭排法。頂部有一道柔和的晨曦光。",
+    "source": "參考 21st 熱門 Split Hero 與 Magic UI animated-shiny-text，改寫為原生 HTML",
+    "use": "對外",
+    "height": 720
+  },
+  {
+    "id": "hero-statement",
+    "name": "大字宣言主視覺",
+    "cat": "主視覺",
+    "desc": "靠字的大小與份量撐場面的主視覺，背景是緩慢閃爍的細格點陣（只在上方淡淡出現），適合品牌首頁或活動頁。",
+    "source": "Magic UI flickering-grid（MIT）改寫為原生 Canvas",
+    "use": "對外",
+    "height": 640
+  },
+  {
+    "id": "bento-grid",
+    "name": "不規則便當格",
+    "cat": "內容區塊",
+    "desc": "大小不一的格子拼成一面（一大一中兩小），每格放真的畫面或數據而不是 icon。滑鼠移過時游標周圍有柔光（聚光燈效果），手機上自動變成單欄。",
+    "source": "Magic UI bento-grid、magic-card（MIT）改寫為原生 HTML",
+    "use": "對外",
+    "height": 820
+  },
+  {
+    "id": "cta-band",
+    "name": "行動呼籲橫幅",
+    "cat": "內容區塊",
+    "desc": "頁尾前的收尾區塊，一句話＋一顆主按鈕，背景是極淡的點陣加一道金光，滑鼠移動時光會跟著。",
+    "source": "Magic UI dot-pattern 與 magic-card（MIT）改寫為原生 HTML",
+    "use": "對外",
+    "height": 440
+  },
+  {
+    "id": "faq",
+    "name": "常見問題手風琴",
+    "cat": "內容區塊",
+    "desc": "點問題展開答案，高度平滑展開（不跳動），一次只開一題，可用鍵盤操作。左側放標題與客服連結。",
+    "source": "shadcn/ui accordion（MIT）改寫為原生 details/summary",
+    "use": "通用",
+    "height": 640
+  },
+  {
+    "id": "feature-rows",
+    "name": "特色條列（取代三欄卡片）",
+    "cat": "內容區塊",
+    "desc": "左側固定標題、右側一條條用細線分隔的特色說明，滑過時該列微亮。比三張一樣的 icon 卡片更像專業網站。",
+    "source": "參考 Linear / Vercel 官網排版，原創",
+    "use": "通用",
+    "height": 640
+  },
+  {
+    "id": "footer",
+    "name": "頁尾",
+    "cat": "內容區塊",
+    "desc": "品牌與一句說明在左，連結分組在右，最底下是版權與營業狀態燈。最下方有一行超大淡色品牌字當收尾。",
+    "source": "參考 21st 熱門 Motion Footer，原創",
+    "use": "通用",
+    "height": 560
+  },
+  {
+    "id": "logo-marquee",
+    "name": "無限輪播跑馬燈",
+    "cat": "內容區塊",
+    "desc": "一排遊戲名稱或合作夥伴標誌無限水平滑動，兩側漸隱；滑鼠移上去會暫停。也可以改放買家評價。不會造成頁面橫向捲動。",
+    "source": "Magic UI marquee（MIT）改寫為純 CSS",
+    "use": "對外",
+    "height": 300
+  },
+  {
+    "id": "pricing",
+    "name": "方案價格表",
+    "cat": "內容區塊",
+    "desc": "三個方案並排（手機自動直排），中間推薦方案用一道金色細框標示而不是整塊變色；上方有「單次／包月」切換，價格會平滑換數字。",
+    "source": "參考 21st 熱門 Pricing（Efferd、Codehagen）與 Magic UI border-beam，改寫為原生 HTML",
+    "use": "對外",
+    "height": 860
+  },
+  {
+    "id": "stats-ticker",
+    "name": "數字跳動統計列",
+    "cat": "內容區塊",
+    "desc": "一排大數字，捲動到畫面中時從 0 平滑跳到目標值（支援千分位與小數），用細線分隔而不是卡片。",
+    "source": "Magic UI number-ticker（MIT）改寫為原生 JS",
+    "use": "通用",
+    "height": 340
+  },
+  {
+    "id": "steps-timeline",
+    "name": "步驟時間軸",
+    "cat": "內容區塊",
+    "desc": "有順序的流程（購買流程、教學步驟）用直線串起來，捲動時線條會跟著填滿到目前位置。只有真的有先後順序的內容才用數字編號。",
+    "source": "參考 21st Timelines 分類，原創",
+    "use": "通用",
+    "height": 760
+  },
+  {
+    "id": "testimonials",
+    "name": "買家評價牆",
+    "cat": "內容區塊",
+    "desc": "一則大字精選評價放左邊，其他短評排成瀑布流在右邊，評價上有星等與購買項目。比一排三張一樣的評價卡更有層次。",
+    "source": "參考 21st Testimonials 分類與 Magic UI tweet-card，原創",
+    "use": "對外",
+    "height": 760
+  },
+  {
+    "id": "spotlight-card",
+    "name": "聚光燈遊戲卡片",
+    "cat": "卡片",
+    "desc": "遊戲選擇卡片，滑鼠在卡片上移動時，邊框與內部會出現跟著游標的柔光（手機上不出現，改成按下時微縮）。封面區用漸層佔位，換成遊戲圖即可。",
+    "source": "Magic UI magic-card（MIT）改寫為原生 HTML",
+    "use": "對外",
+    "height": 620
+  },
+  {
+    "id": "tutorial-list",
+    "name": "教學清單列",
+    "cat": "卡片",
+    "desc": "一款遊戲底下的教學清單，每列有標題、難度、閱讀時間、鎖定狀態；可即時搜尋並標示關鍵字，找不到時顯示空狀態。手機上資訊自動換到第二行。",
+    "source": "參考 Linear 清單與 21st Lists 分類，原創",
+    "use": "對外",
+    "height": 680
+  },
+  {
+    "id": "command-palette",
+    "name": "快速搜尋面板（Ctrl＋K）",
+    "cat": "表單",
+    "desc": "按 Ctrl＋K（Mac 為 ⌘＋K）或點搜尋鈕，跳出置中搜尋面板：分組結果、方向鍵上下選、Enter 開啟、Esc 關閉、關鍵字標示、找不到時提示。",
+    "source": "shadcn/ui command（MIT，原為 cmdk）改寫為原生 HTML",
+    "use": "通用",
+    "height": 620
+  },
+  {
+    "id": "form-controls",
+    "name": "表單元件組",
+    "cat": "表單",
+    "desc": "一份設定表單示範所有基本元件：輸入框、下拉選單、多行文字、開關、核取方塊、單選分段按鈕、滑桿（附數值），含必填與錯誤提示。",
+    "source": "shadcn/ui input、select、switch、checkbox、radio-group、slider、field（MIT）改寫為原生 HTML",
+    "use": "通用",
+    "height": 900
+  },
+  {
+    "id": "unlock-form",
+    "name": "密碼序號解鎖畫面",
+    "cat": "表單",
+    "desc": "教學頁的解鎖畫面：輸入密碼序號、顯示/隱藏切換、送出中狀態、錯誤提示（輸入框輕微搖晃）、成功時鎖頭打開。示範序號為 453058。",
+    "source": "shadcn/ui login-03 區塊（MIT）與 input 改寫為原生 HTML",
+    "use": "對外",
+    "height": 640
+  },
+  {
+    "id": "dialog",
+    "name": "對話框與側拉面板",
+    "cat": "回饋提示",
+    "desc": "兩種彈出層：置中確認對話框（危險操作用紅色按鈕）與從右側滑出的編輯面板（手機上從下方升起）。可按 Esc 或點背景關閉，開啟時背景不會捲動。",
+    "source": "shadcn/ui alert-dialog、sheet、drawer（MIT）改寫為原生 dialog 元素",
+    "use": "通用",
+    "height": 520
+  },
+  {
+    "id": "states",
+    "name": "載入中／空資料／錯誤狀態",
+    "cat": "回饋提示",
+    "desc": "同一個區塊的四種狀態切換示範：骨架畫面（載入中）、有資料、沒有資料（附下一步按鈕）、讀取失敗（說明原因與重試）。每個資料區塊都該備齊這四種。",
+    "source": "shadcn/ui skeleton、empty、alert（MIT）改寫為原生 HTML",
+    "use": "通用",
+    "height": 600
+  },
+  {
+    "id": "toast",
+    "name": "右下角通知（吐司訊息）",
+    "cat": "回饋提示",
+    "desc": "操作完成後在角落跳出短訊息：成功、錯誤、一般、可「復原」的四種，會自動消失（滑鼠移上去暫停計時），最多同時三則，手機上改在下方置中。",
+    "source": "shadcn/ui sonner（MIT）改寫為原生 HTML",
+    "use": "通用",
+    "height": 460
+  },
+  {
+    "id": "activity-feed",
+    "name": "即時動態清單",
+    "cat": "資料呈現",
+    "desc": "新事件從上方平滑滑入的動態清單（新訂單、序號登入、客服訊息），超過上限時最舊的淡出。適合放在儀表板側邊。",
+    "source": "Magic UI animated-list（MIT）改寫為原生 JS",
+    "use": "自用",
+    "height": 560
+  },
+  {
+    "id": "bot-status",
+    "name": "機器人／服務狀態面板",
+    "cat": "資料呈現",
+    "desc": "監控多個機器人或服務是否正常：狀態燈（運作中會有呼吸光暈）、最後回報時間、今日處理量、啟停開關。異常的會排到最上面並說明原因。",
+    "source": "參考 21st Status 分類與 Magic UI animated-circular-progress-bar，原創",
+    "use": "自用",
+    "height": 600
+  },
+  {
+    "id": "data-table",
+    "name": "可排序篩選資料表",
+    "cat": "資料呈現",
+    "desc": "後台資料表：搜尋、狀態篩選標籤（附數量）、點欄位標題排序、分頁、勾選批次操作。手機上每列自動變成卡片，絕不出現左右捲動。",
+    "source": "shadcn/ui table、dashboard-01 資料表（MIT）改寫為原生 HTML",
+    "use": "自用",
+    "height": 900
+  },
+  {
+    "id": "kpi-cards",
+    "name": "關鍵數字＋迷你走勢",
+    "cat": "資料呈現",
+    "desc": "儀表板頂部的四個關鍵數字，各自附漲跌幅（綠漲紅跌，另有箭頭符號，不只靠顏色）與迷你走勢線。數字用等寬字，跳動時不會左右晃。",
+    "source": "shadcn/ui dashboard-01 section-cards（MIT）改寫為原生 HTML＋SVG",
+    "use": "自用",
+    "height": 520
+  },
+  {
+    "id": "backgrounds",
+    "name": "低調背景紋理組",
+    "cat": "文字與背景",
+    "desc": "五種不搶戲的背景：細點陣、細格線、雜訊顆粒、斜紋、晨曦光暈。全部用 CSS 寫成，不需要圖片，深淺色自動切換，邊緣淡出。複製對應的 class 即可用在任何區塊。",
+    "source": "Magic UI dot-pattern、grid-pattern、noise-texture、striped-pattern、light-rays（MIT）改寫為純 CSS",
+    "use": "通用",
+    "height": 760
+  },
+  {
+    "id": "text-effects",
+    "name": "文字動態效果組",
+    "cat": "文字與背景",
+    "desc": "四種低調的文字效果：模糊淡入（逐行出現）、輪替詞（固定位置換字）、光澤掃過、打字機。整頁只挑一種用，當作開場的唯一亮點。",
+    "source": "Magic UI blur-fade、word-rotate、animated-shiny-text、typing-animation（MIT）改寫為原生 HTML",
+    "use": "對外",
+    "height": 760
+  },
+  {
+    "id": "copy-code",
+    "name": "一鍵複製區塊",
+    "cat": "小工具",
+    "desc": "放指令、序號、兌換碼的區塊，右上角有複製按鈕，按下後圖示變成打勾並顯示「已複製」。長內容自動換行，不會撐出橫向捲軸。",
+    "source": "Magic UI terminal 與 shadcn/ui 的複製按鈕（MIT）改寫為原生 HTML",
+    "use": "通用",
+    "height": 480
+  },
+  {
+    "id": "reading-progress",
+    "name": "閱讀進度＋回到頂端",
+    "cat": "小工具",
+    "desc": "長頁面專用：頂端一條細細的閱讀進度線，右下角的回到頂端按鈕外圈是進度環，捲過一段距離才出現。",
+    "source": "Magic UI scroll-progress、animated-circular-progress-bar（MIT）改寫為原生 HTML",
+    "use": "通用",
+    "height": 520
+  },
+  {
+    "id": "tabs",
+    "name": "滑動指示頁籤",
+    "cat": "小工具",
+    "desc": "頁籤底下有一條會滑到目前位置的金色指示線，內容切換時淡入。支援方向鍵切換，頁籤太多時在手機上自動換行（不會左右捲動）。",
+    "source": "shadcn/ui tabs（MIT）改寫為原生 HTML",
+    "use": "通用",
+    "height": 460
+  },
+  {
+    "id": "theme-toggle",
+    "name": "深淺色切換",
+    "cat": "小工具",
+    "desc": "三段切換（跟隨系統／淺色／深色），選擇會記住（瀏覽器無法儲存時也不會出錯），切換時整頁顏色平滑過渡。",
+    "source": "Magic UI animated-theme-toggler（MIT）改寫為原生 HTML",
+    "use": "通用",
+    "height": 360
+  }
+]

@@ -1,0 +1,80 @@
+<!--
+名稱: 密碼序號解鎖畫面
+分類: 表單
+說明: 教學頁的解鎖畫面：輸入密碼序號、顯示/隱藏切換、送出中狀態、錯誤提示（輸入框輕微搖晃）、成功時鎖頭打開。示範序號為 453058。
+來源: shadcn/ui login-03 區塊（MIT）與 input 改寫為原生 HTML
+適用: 對外
+高度: 640
+-->
+<style>
+.ul-wrap { min-height: 100vh; display: grid; place-items: center; padding: 40px 20px; position: relative; overflow: hidden; }
+.ul-wrap::before { content: ""; position: absolute; inset: auto 0 -40% 0; height: 70%; background: radial-gradient(50% 50% at 50% 50%, var(--sun-soft), transparent); pointer-events: none; }
+.ul-card { position: relative; width: min(100%, 400px); padding: 32px 28px; border-radius: var(--r-lg); background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow); }
+.ul-lock { width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; background: var(--surface-2); border: 1px solid var(--line); margin-bottom: 20px; }
+.ul-lock svg { width: 24px; height: 24px; stroke: var(--text); fill: none; stroke-width: 1.8; stroke-linecap: round; }
+.ul-lock .shackle { transition: transform .45s var(--ease); transform-origin: 16px 11px; }
+.ul-card.is-ok .ul-lock { background: var(--sun-soft); border-color: transparent; }
+.ul-card.is-ok .ul-lock svg { stroke: var(--sun); }
+.ul-card.is-ok .shackle { transform: translateY(-3px) rotate(28deg); }
+.ul-card h1 { font-size: var(--fs-xl); }
+.ul-card > p { margin-top: 6px; color: var(--text-2); font-size: var(--fs-sm); }
+.ul-form { margin-top: 24px; display: grid; gap: 16px; }
+.ul-pw { position: relative; }
+.ul-pw .input { padding-right: 52px; letter-spacing: .08em; }
+.ul-eye { position: absolute; right: 4px; top: 50%; translate: 0 -50%; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 6px; color: var(--muted); }
+.ul-eye:hover { color: var(--text); background: var(--surface-2); }
+.ul-eye svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+.ul-shake { animation: ul-shake .4s; }
+@keyframes ul-shake { 20%, 60% { transform: translateX(-5px); } 40%, 80% { transform: translateX(5px); } }
+.ul-form .btn { width: 100%; }
+.ul-spin { width: 16px; height: 16px; border-radius: 50%; border: 2px solid currentColor; border-right-color: transparent; animation: ul-spin .7s linear infinite; display: none; }
+.is-loading .ul-spin { display: block; }
+@keyframes ul-spin { to { transform: rotate(360deg); } }
+.ul-note { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); font-size: var(--fs-xs); color: var(--muted); }
+.ul-note a { color: var(--text-2); text-decoration: underline; text-underline-offset: 3px; }
+</style>
+
+<div class="ul-wrap">
+  <div class="ul-card" id="ul-card">
+    <div class="ul-lock" aria-hidden="true"><svg viewBox="0 0 32 32"><rect x="7" y="14" width="18" height="13" rx="3"/><path class="shackle" d="M11 14v-3a5 5 0 0110 0v3"/></svg></div>
+    <h1 id="ul-title">輸入密碼序號</h1>
+    <p id="ul-desc">楓之谷經典 · 弓箭手二轉完整流程</p>
+    <form class="ul-form" id="ul-form" novalidate>
+      <div class="field" id="ul-field">
+        <label class="label" for="ul-code">密碼序號</label>
+        <div class="ul-pw">
+          <input class="input num" id="ul-code" type="password" inputmode="numeric" autocomplete="off" placeholder="你的 8591 會員編號" aria-describedby="ul-hint">
+          <button type="button" class="ul-eye" id="ul-eye" aria-label="顯示序號"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        </div>
+        <span class="hint" id="ul-hint">購買後我們會在 8591 訂單留言提供。</span>
+      </div>
+      <button class="btn btn-primary" id="ul-btn" type="submit"><span class="ul-spin" aria-hidden="true"></span><span id="ul-btn-text">解鎖教學</span></button>
+    </form>
+    <p class="ul-note">序號開通後 24 小時內有效。過期或無法登入，請<a href="#">私訊客服</a>重新開通。</p>
+  </div>
+</div>
+
+<script>
+(() => {
+  const DEMO = '453058'; // 示範用；正式版要改成伺服器端驗證
+  const card = document.getElementById('ul-card'), form = document.getElementById('ul-form'), field = document.getElementById('ul-field');
+  const code = document.getElementById('ul-code'), hint = document.getElementById('ul-hint'), btn = document.getElementById('ul-btn'), btnText = document.getElementById('ul-btn-text');
+  const eye = document.getElementById('ul-eye');
+  const baseHint = hint.textContent;
+  eye.addEventListener('click', () => { const show = code.type === 'password'; code.type = show ? 'text' : 'password'; eye.setAttribute('aria-label', show ? '隱藏序號' : '顯示序號'); });
+  code.addEventListener('input', () => { field.classList.remove('is-error'); hint.textContent = baseHint; });
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const v = code.value.trim();
+    if (!v) return fail('請輸入密碼序號。');
+    if (!/^\d+$/.test(v)) return fail('序號只包含數字，請再確認一次。');
+    btn.classList.add('is-loading'); btn.disabled = true; btnText.textContent = '驗證中';
+    setTimeout(() => {
+      btn.classList.remove('is-loading'); btn.disabled = false;
+      if (v === DEMO) { card.classList.add('is-ok'); btnText.textContent = '已解鎖，前往教學'; document.getElementById('ul-title').textContent = '解鎖成功'; }
+      else { btnText.textContent = '解鎖教學'; fail('序號不正確或已過期。請核對 8591 訂單留言，或私訊客服重新開通。'); }
+    }, 900);
+  });
+  function fail(msg) { field.classList.add('is-error'); hint.textContent = msg; code.classList.remove('ul-shake'); void code.offsetWidth; code.classList.add('ul-shake'); code.focus(); }
+})();
+</script>

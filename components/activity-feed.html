@@ -1,0 +1,59 @@
+<!--
+名稱: 即時動態清單
+分類: 資料呈現
+說明: 新事件從上方平滑滑入的動態清單（新訂單、序號登入、客服訊息），超過上限時最舊的淡出。適合放在儀表板側邊。
+來源: Magic UI animated-list（MIT）改寫為原生 JS
+適用: 自用
+高度: 560
+-->
+<style>
+.af { max-width: 460px; border-radius: var(--r-lg); background: var(--surface); border: 1px solid var(--line); overflow: hidden; }
+.af-head { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; border-bottom: 1px solid var(--line); }
+.af-head b { font-size: var(--fs-md); }
+.af-live { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-xs); color: var(--up); }
+.af-list { list-style: none; margin: 0; padding: 8px; display: grid; gap: 6px; min-height: 380px; align-content: start; }
+.af-item { display: grid; grid-template-columns: 36px 1fr auto; gap: 12px; align-items: center; padding: 10px; border-radius: var(--r-md); animation: af-in .5s var(--ease); }
+.af-item:hover { background: var(--surface-2); }
+.af-item.is-out { animation: af-out .3s var(--ease) forwards; }
+@keyframes af-in { from { opacity: 0; transform: translateY(-14px) scale(.97); } }
+@keyframes af-out { to { opacity: 0; transform: scale(.96); } }
+.af-ic { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; background: var(--surface-2); }
+.af-ic svg { width: 17px; height: 17px; fill: none; stroke: var(--text-2); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.af-ic.sun { background: var(--sun-soft); } .af-ic.sun svg { stroke: var(--sun); }
+.af-item b { font-size: var(--fs-sm); display: block; }
+.af-item span { font-size: var(--fs-xs); color: var(--muted); }
+.af-item time { font-size: var(--fs-xs); color: var(--muted); white-space: nowrap; }
+</style>
+
+<section class="section">
+  <div class="container">
+    <div class="af">
+      <div class="af-head"><b>即時動態</b><span class="af-live"><span class="dot"></span>即時更新</span></div>
+      <ul class="af-list" id="af-list" aria-live="polite"></ul>
+    </div>
+  </div>
+</section>
+
+<script>
+(() => {
+  const IC = { order: '<path d="M3 4h2l2 12h11l2-8H6"/><circle cx="9" cy="20" r="1"/><circle cx="17" cy="20" r="1"/>', key: '<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3"/>', msg: '<path d="M4 5h16v11H8l-4 4z"/>' };
+  const EV = [
+    { i: 'order', sun: true, t: '新訂單：楓之谷經典 整款教學', s: '8591 會員 453058' },
+    { i: 'key', t: '序號 512907 首次登入', s: '原神 · 手機' },
+    { i: 'msg', t: '客服新訊息', s: '「序號輸入後顯示過期？」' },
+    { i: 'order', sun: true, t: '新訂單：天堂W 帳號', s: '8591 會員 388214' },
+    { i: 'key', t: '序號 453058 第二台裝置登入', s: '楓之谷經典 · 電腦' }
+  ];
+  const list = document.getElementById('af-list'), MAX = 5; let k = 0;
+  function push() {
+    const e = EV[k++ % EV.length], li = document.createElement('li'); li.className = 'af-item';
+    li.innerHTML = `<span class="af-ic ${e.sun ? 'sun' : ''}"><svg viewBox="0 0 24 24">${IC[e.i]}</svg></span><div><b></b><span></span></div><time>剛剛</time>`;
+    li.querySelector('b').textContent = e.t; li.querySelector('span:not(.af-ic)').textContent = e.s;
+    list.querySelectorAll('time').forEach((t, n) => t.textContent = `${(n + 1) * 2} 分鐘前`);
+    list.prepend(li);
+    const extra = [...list.children].slice(MAX); extra.forEach(x => { x.classList.add('is-out'); setTimeout(() => x.remove(), 300); });
+  }
+  for (let n = 0; n < 3; n++) push();
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) setInterval(push, 2600);
+})();
+</script>

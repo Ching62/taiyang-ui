@@ -1,0 +1,70 @@
+<!--
+名稱: 右下角通知（吐司訊息）
+分類: 回饋提示
+說明: 操作完成後在角落跳出短訊息：成功、錯誤、一般、可「復原」的四種，會自動消失（滑鼠移上去暫停計時），最多同時三則，手機上改在下方置中。
+來源: shadcn/ui sonner（MIT）改寫為原生 HTML
+適用: 通用
+高度: 460
+-->
+<style>
+.ts-demo { display: flex; flex-wrap: wrap; gap: 10px; }
+.ts-stack { position: fixed; z-index: 200; left: 12px; right: 12px; bottom: 12px; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+@media (min-width: 600px) { .ts-stack { left: auto; right: 20px; bottom: 20px; width: 360px; } }
+.ts { pointer-events: auto; display: grid; grid-template-columns: 20px 1fr auto; gap: 12px; align-items: start; padding: 14px 14px 14px 16px; border-radius: var(--r-md); background: var(--raised); border: 1px solid var(--line-strong); box-shadow: 0 16px 40px -16px rgba(0,0,0,.35); font-size: var(--fs-sm); animation: ts-in .3s var(--ease); position: relative; overflow: hidden; }
+.ts.is-out { animation: ts-out .25s var(--ease) forwards; }
+@keyframes ts-in { from { opacity: 0; transform: translateY(12px) scale(.97); } }
+@keyframes ts-out { to { opacity: 0; transform: translateY(8px) scale(.97); } }
+.ts svg { width: 18px; height: 18px; margin-top: 2px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.ts.ok svg { color: var(--up); } .ts.err svg { color: var(--down); } .ts.info svg { color: var(--text-2); }
+.ts b { display: block; font-weight: 600; }
+.ts p { color: var(--muted); margin-top: 2px; }
+.ts-act { display: flex; gap: 4px; align-items: center; }
+.ts-x { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 6px; color: var(--muted); }
+.ts-x:hover { background: var(--surface-2); color: var(--text); }
+.ts-bar { position: absolute; left: 0; bottom: 0; height: 2px; background: var(--line-strong); width: 100%; transform-origin: left; }
+</style>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head" style="margin-bottom:24px"><h2 style="font-size:var(--fs-2xl)">通知訊息</h2><p style="font-size:var(--fs-md)">點按鈕看看四種通知。</p></div>
+    <div class="ts-demo">
+      <button class="btn" data-t="ok">儲存成功</button>
+      <button class="btn" data-t="err">發生錯誤</button>
+      <button class="btn" data-t="info">一般訊息</button>
+      <button class="btn" data-t="undo">刪除（可復原）</button>
+    </div>
+  </div>
+</section>
+<div class="ts-stack" id="ts-stack" aria-live="polite"></div>
+
+<script>
+// 用法：toast({ type: 'ok' | 'err' | 'info', title: '標題', desc: '說明', action: { label: '復原', onClick(){} }, duration: 4000 })
+const toast = (() => {
+  const stack = document.getElementById('ts-stack');
+  const IC = { ok: '<path d="M5 12l5 5L20 7"/>', err: '<circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/>', info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>' };
+  return ({ type = 'info', title, desc = '', action, duration = 4000 }) => {
+    while (stack.children.length >= 3) stack.firstElementChild.remove();
+    const el = document.createElement('div'); el.className = 'ts ' + type; el.setAttribute('role', type === 'err' ? 'alert' : 'status');
+    el.innerHTML = `<svg viewBox="0 0 24 24">${IC[type]}</svg><div><b></b>${desc ? '<p></p>' : ''}</div><div class="ts-act"></div><span class="ts-bar"></span>`;
+    el.querySelector('b').textContent = title; if (desc) el.querySelector('p').textContent = desc;
+    const act = el.querySelector('.ts-act');
+    if (action) { const a = document.createElement('button'); a.className = 'btn btn-sm'; a.textContent = action.label; a.onclick = () => { action.onClick?.(); dismiss(); }; act.append(a); }
+    const x = document.createElement('button'); x.className = 'ts-x'; x.setAttribute('aria-label', '關閉通知'); x.innerHTML = '✕'; x.onclick = () => dismiss(); act.append(x);
+    stack.append(el);
+    const bar = el.querySelector('.ts-bar'); let left = duration, t0 = Date.now(), timer, raf;
+    const tick = () => { const p = Math.max(0, (left - (Date.now() - t0)) / duration); bar.style.transform = `scaleX(${p})`; raf = requestAnimationFrame(tick); };
+    const start = () => { t0 = Date.now(); timer = setTimeout(dismiss, left); tick(); };
+    const pause = () => { clearTimeout(timer); cancelAnimationFrame(raf); left -= Date.now() - t0; };
+    el.addEventListener('pointerenter', pause); el.addEventListener('pointerleave', start);
+    function dismiss() { clearTimeout(timer); cancelAnimationFrame(raf); el.classList.add('is-out'); setTimeout(() => el.remove(), 250); }
+    start();
+  };
+})();
+document.querySelectorAll('[data-t]').forEach(b => b.addEventListener('click', () => {
+  const t = b.dataset.t;
+  if (t === 'ok') toast({ type: 'ok', title: '教學已儲存', desc: '已出現在楓之谷經典分類中。' });
+  if (t === 'err') toast({ type: 'err', title: '儲存失敗', desc: '網路連線中斷，請確認後再按一次儲存。', duration: 6000 });
+  if (t === 'info') toast({ type: 'info', title: '有 3 個序號即將到期' });
+  if (t === 'undo') toast({ type: 'info', title: '已刪除序號 453058', action: { label: '復原', onClick: () => toast({ type: 'ok', title: '已復原序號 453058' }) } });
+}));
+</script>

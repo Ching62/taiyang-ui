@@ -1,0 +1,37 @@
+<!--
+名稱: 行動呼籲橫幅
+分類: 內容區塊
+說明: 頁尾前的收尾區塊，一句話＋一顆主按鈕，背景是極淡的點陣加一道金光，滑鼠移動時光會跟著。
+來源: Magic UI dot-pattern 與 magic-card（MIT）改寫為原生 HTML
+適用: 對外
+高度: 440
+-->
+<style>
+.cta { position: relative; overflow: hidden; isolation: isolate; border-radius: var(--r-lg); border: 1px solid var(--line); background: var(--surface); padding: clamp(40px, 7vw, 80px) clamp(24px, 5vw, 64px); display: grid; gap: 28px; align-items: center; }
+@media (min-width: 860px) { .cta { grid-template-columns: 1fr auto; } }
+.cta::before { content: ""; position: absolute; inset: 0; z-index: -1; background-image: radial-gradient(var(--line-strong) 1px, transparent 1px); background-size: 18px 18px; -webkit-mask-image: linear-gradient(100deg, transparent 30%, #000); mask-image: linear-gradient(100deg, transparent 30%, #000); }
+.cta::after { content: ""; position: absolute; z-index: -1; width: 520px; height: 520px; left: var(--cx, 80%); top: var(--cy, 50%); transform: translate(-50%, -50%); background: radial-gradient(closest-side, var(--sun-glow), transparent); transition: left .6s var(--ease), top .6s var(--ease); pointer-events: none; }
+.cta h2 { font-size: var(--fs-3xl); max-width: 16em; }
+.cta p { margin-top: 12px; color: var(--text-2); max-width: 32em; }
+.cta-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+</style>
+
+<section class="section">
+  <div class="container">
+    <div class="cta" id="cta">
+      <div><h2>今天下單，今天就能開始照著練</h2><p>購買後立即提供密碼序號，有問題隨時私訊客服。</p></div>
+      <div class="cta-actions"><a href="#" class="btn btn-sun">前往 8591 賣場</a><a href="#" class="btn">先看免費試閱</a></div>
+    </div>
+  </div>
+</section>
+
+<script>
+(() => {
+  const el = document.getElementById('cta');
+  if (matchMedia('(pointer: fine)').matches) el.addEventListener('pointermove', e => {
+    const r = el.getBoundingClientRect();
+    el.style.setProperty('--cx', ((e.clientX - r.left) / r.width * 100) + '%');
+    el.style.setProperty('--cy', ((e.clientY - r.top) / r.height * 100) + '%');
+  });
+})();
+</script>

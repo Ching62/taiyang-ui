@@ -1,0 +1,33 @@
+<!--
+名稱: 特色條列（取代三欄卡片）
+分類: 內容區塊
+說明: 左側固定標題、右側一條條用細線分隔的特色說明，滑過時該列微亮。比三張一樣的 icon 卡片更像專業網站。
+來源: 參考 Linear / Vercel 官網排版，原創
+適用: 通用
+高度: 640
+-->
+<style>
+.fr-grid { display: grid; gap: 40px; }
+@media (min-width: 900px) { .fr-grid { grid-template-columns: 0.9fr 1.4fr; gap: 72px; } .fr-head { position: sticky; top: 96px; align-self: start; } }
+.fr-list { border-top: 1px solid var(--line); }
+.fr-item { display: grid; gap: 6px 24px; padding: 24px 0; border-bottom: 1px solid var(--line); transition: background .25s var(--ease); }
+@media (min-width: 640px) { .fr-item { grid-template-columns: 200px 1fr; } }
+.fr-item h3 { font-size: var(--fs-md); font-weight: 650; }
+.fr-item p { color: var(--text-2); font-size: var(--fs-md); }
+.fr-item:hover h3 { color: var(--sun); }
+</style>
+
+<section class="section">
+  <div class="container fr-grid">
+    <div class="fr-head section-head" style="margin-bottom:0">
+      <h2>為什麼買家選擇太陽電玩</h2>
+      <p>不只賣帳號，也把怎麼玩、怎麼省時間一起交給你。</p>
+    </div>
+    <div class="fr-list">
+      <div class="fr-item"><h3>8591 交易保障</h3><p>全程走平台履約保證，款項在你確認無誤後才撥給賣家。</p></div>
+      <div class="fr-item"><h3>附完整教學</h3><p>購買後提供專屬密碼序號，進入教學網站照步驟操作即可。</p></div>
+      <div class="fr-item"><h3>移交前逐項檢查</h3><p>等級、道具、綁定狀態都在移交前核對一次，避免收到才發現問題。</p></div>
+      <div class="fr-item"><h3>真人客服</h3><p>遇到問題直接私訊，通常一小時內回覆，晚上也有人在。</p></div>
+    </div>
+  </div>
+</section>

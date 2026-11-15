@@ -1,0 +1,68 @@
+<!--
+名稱: 不規則便當格
+分類: 內容區塊
+說明: 大小不一的格子拼成一面（一大一中兩小），每格放真的畫面或數據而不是 icon。滑鼠移過時游標周圍有柔光（聚光燈效果），手機上自動變成單欄。
+來源: Magic UI bento-grid、magic-card（MIT）改寫為原生 HTML
+適用: 對外
+高度: 820
+-->
+<style>
+.bn-grid { display: grid; gap: 14px; grid-template-columns: 1fr; }
+@media (min-width: 760px) { .bn-grid { grid-template-columns: repeat(6, 1fr); grid-auto-rows: 210px; } .bn-a { grid-column: span 4; grid-row: span 2; } .bn-b { grid-column: span 2; grid-row: span 2; } .bn-c { grid-column: span 3; } .bn-d { grid-column: span 3; } }
+.bn-cell { position: relative; overflow: hidden; border-radius: var(--r-lg); background: var(--surface); border: 1px solid var(--line); padding: 24px; display: flex; flex-direction: column; min-height: 200px; }
+.bn-cell::before { content: ""; position: absolute; inset: 0; background: radial-gradient(280px circle at var(--mx, -999px) var(--my, -999px), var(--sun-soft), transparent 70%); pointer-events: none; transition: opacity .3s; opacity: 0; }
+.bn-cell:hover::before { opacity: 1; }
+.bn-cell h3 { font-size: var(--fs-lg); position: relative; }
+.bn-cell p { color: var(--text-2); font-size: var(--fs-sm); margin-top: 6px; position: relative; max-width: 32em; }
+.bn-vis { position: relative; margin-top: auto; padding-top: 20px; }
+/* A：行事曆 */
+.bn-cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.bn-cal span { height: clamp(30px, 4vw, 40px); border-radius: 8px; background: var(--surface-2); font-size: 11px; color: var(--muted); display: grid; place-items: center; }
+.bn-cal span.on { background: var(--sun-soft); color: var(--sun); font-weight: 700; box-shadow: inset 0 0 0 1px var(--sun); }
+.bn-cal span.hot { background: var(--text); color: var(--bg); font-weight: 700; }
+/* B：數字 */
+.bn-big { font-size: clamp(3rem, 7vw, 4.4rem); font-weight: 750; letter-spacing: -0.04em; line-height: 1; }
+.bn-bars { display: flex; align-items: flex-end; gap: 6px; height: 90px; margin-top: 18px; }
+.bn-bars i { flex: 1; border-radius: 4px 4px 0 0; background: var(--line-strong); }
+.bn-bars i:last-child { background: var(--sun); }
+/* C：聊天 */
+.bn-msg { display: grid; gap: 8px; }
+.bn-msg div { max-width: 80%; padding: 8px 12px; border-radius: 12px; font-size: var(--fs-sm); background: var(--surface-2); }
+.bn-msg div.me { justify-self: end; background: var(--text); color: var(--bg); }
+/* D：標籤 */
+.bn-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+</style>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head"><h2>一個地方，掌握你玩的每款遊戲</h2><p>行事曆、教學、客服都在同一個網站裡。</p></div>
+    <div class="bn-grid">
+      <article class="bn-cell bn-a">
+        <h3>遊戲行事曆</h3><p>新版本、改版活動、限時禮包，每週整理一次，不用再到處爬文。</p>
+        <div class="bn-vis"><div class="bn-cal">
+          <span>1</span><span>2</span><span>3</span><span class="on">4</span><span>5</span><span>6</span><span>7</span>
+          <span>8</span><span>9</span><span class="hot">10</span><span>11</span><span>12</span><span class="on">13</span><span>14</span>
+          <span>15</span><span>16</span><span>17</span><span>18</span><span class="on">19</span><span>20</span><span>21</span>
+        </div></div>
+      </article>
+      <article class="bn-cell bn-b">
+        <h3>本月新增教學</h3><p>涵蓋 5 款遊戲。</p>
+        <div class="bn-vis"><div class="bn-big num">14</div><div class="bn-bars" aria-hidden="true"><i style="height:30%"></i><i style="height:45%"></i><i style="height:38%"></i><i style="height:60%"></i><i style="height:52%"></i><i style="height:92%"></i></div></div>
+      </article>
+      <article class="bn-cell bn-c">
+        <h3>客服即時回覆</h3>
+        <div class="bn-vis bn-msg"><div class="me">序號輸入後顯示過期？</div><div>幫你重新開通了，再試一次。</div></div>
+      </article>
+      <article class="bn-cell bn-d">
+        <h3>支援的遊戲</h3>
+        <div class="bn-vis bn-tags"><span class="badge">楓之谷經典</span><span class="badge">天堂W</span><span class="badge">原神</span><span class="badge">RO 仙境傳說</span><span class="badge">寶可夢</span><span class="badge">+7 款</span></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<script>
+document.querySelectorAll('.bn-cell').forEach(el => el.addEventListener('pointermove', e => {
+  const r = el.getBoundingClientRect(); el.style.setProperty('--mx', e.clientX - r.left + 'px'); el.style.setProperty('--my', e.clientY - r.top + 'px');
+}));
+</script>

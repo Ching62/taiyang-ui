@@ -1,0 +1,44 @@
+<!--
+名稱: 買家評價牆
+分類: 內容區塊
+說明: 一則大字精選評價放左邊，其他短評排成瀑布流在右邊，評價上有星等與購買項目。比一排三張一樣的評價卡更有層次。
+來源: 參考 21st Testimonials 分類與 Magic UI tweet-card，原創
+適用: 對外
+高度: 760
+-->
+<style>
+.tm-grid { display: grid; gap: 16px; }
+@media (min-width: 960px) { .tm-grid { grid-template-columns: 1.1fr 1.4fr; gap: 24px; } }
+.tm-hero { padding: clamp(28px, 4vw, 44px); border-radius: var(--r-lg); background: var(--surface); border: 1px solid var(--line); display: flex; flex-direction: column; }
+.tm-hero blockquote { margin: 0; font-size: clamp(1.25rem, 2.4vw, 1.6rem); line-height: 1.55; font-weight: 550; letter-spacing: -0.01em; }
+.tm-who { margin-top: auto; padding-top: 28px; display: flex; align-items: center; gap: 12px; }
+.tm-av { width: 40px; height: 40px; border-radius: 50%; flex: none; display: grid; place-items: center; font-weight: 700; background: var(--surface-2); border: 1px solid var(--line-strong); }
+.tm-who b { display: block; font-size: var(--fs-sm); }
+.tm-who span { font-size: var(--fs-xs); color: var(--muted); }
+.tm-cols { columns: 1; column-gap: 16px; }
+@media (min-width: 600px) { .tm-cols { columns: 2; } }
+.tm-card { break-inside: avoid; margin-bottom: 16px; padding: 20px; border-radius: var(--r-md); background: var(--surface); border: 1px solid var(--line); }
+.tm-card p { font-size: var(--fs-sm); color: var(--text-2); margin-top: 10px; }
+.tm-stars { display: flex; gap: 2px; color: var(--sun); }
+.tm-stars svg { width: 14px; height: 14px; fill: currentColor; }
+.tm-meta { margin-top: 14px; display: flex; justify-content: space-between; gap: 8px; font-size: var(--fs-xs); color: var(--muted); }
+</style>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head"><h2>買家怎麼說</h2><p>以下為 8591 交易後的真實回饋。</p></div>
+    <div class="tm-grid">
+      <figure class="tm-hero" style="margin:0">
+        <div class="tm-stars" aria-label="五顆星"><svg viewBox="0 0 24 24"><path d="M12 2l3 7 7 .6-5.3 4.6L18.4 22 12 18l-6.4 4 1.7-7.8L2 9.6 9 9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3 7 7 .6-5.3 4.6L18.4 22 12 18l-6.4 4 1.7-7.8L2 9.6 9 9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3 7 7 .6-5.3 4.6L18.4 22 12 18l-6.4 4 1.7-7.8L2 9.6 9 9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3 7 7 .6-5.3 4.6L18.4 22 12 18l-6.4 4 1.7-7.8L2 9.6 9 9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3 7 7 .6-5.3 4.6L18.4 22 12 18l-6.4 4 1.7-7.8L2 9.6 9 9z"/></svg></div>
+        <blockquote style="margin-top:18px">原本卡在 70 等很久，照著教學的練功路線兩天就過了。步驟寫得很細，連要先買什麼藥水都有寫，真的省很多時間。</blockquote>
+        <figcaption class="tm-who"><span class="tm-av">林</span><div><b>林先生</b><span>購買：楓之谷經典 整款教學</span></div></figcaption>
+      </figure>
+      <div class="tm-cols">
+        <div class="tm-card"><div class="tm-stars"><svg viewBox="0 0 24 24"><path d="M12 2l3 7 7 .6-5.3 4.6L18.4 22 12 18l-6.4 4 1.7-7.8L2 9.6 9 9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3 7 7 .6-5.3 4.6L18.4 22 12 18l-6.4 4 1.7-7.8L2 9.6 9 9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3 7 7 .6-5.3 4.6L18.4 22 12 18l-6.4 4 1.7-7.8L2 9.6 9 9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3 7 7 .6-5.3 4.6L18.4 22 12 18l-6.4 4 1.7-7.8L2 9.6 9 9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3 7 7 .6-5.3 4.6L18.4 22 12 18l-6.4 4 1.7-7.8L2 9.6 9 9z"/></svg></div><p>半夜問問題也有回，帳號移交很順。</p><div class="tm-meta"><span>陳小姐</span><span>天堂W 帳號</span></div></div>
+        <div class="tm-card"><div class="tm-stars"><svg viewBox="0 0 24 24"><path d="M12 2l3 7 7 .6-5.3 4.6L18.4 22 12 18l-6.4 4 1.7-7.8L2 9.6 9 9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3 7 7 .6-5.3 4.6L18.4 22 12 18l-6.4 4 1.7-7.8L2 9.6 9 9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3 7 7 .6-5.3 4.6L18.4 22 12 18l-6.4 4 1.7-7.8L2 9.6 9 9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3 7 7 .6-5.3 4.6L18.4 22 12 18l-6.4 4 1.7-7.8L2 9.6 9 9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3 7 7 .6-5.3 4.6L18.4 22 12 18l-6.4 4 1.7-7.8L2 9.6 9 9z"/></svg></div><p>教學網站手機看也很清楚，直接邊玩邊看。</p><div class="tm-meta"><span>阿哲</span><span>原神 單份教學</span></div></div>
+        <div class="tm-card"><div class="tm-stars"><svg viewBox="0 0 24 24"><path d="M12 2l3 7 7 .6-5.3 4.6L18.4 22 12 18l-6.4 4 1.7-7.8L2 9.6 9 9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3 7 7 .6-5.3 4.6L18.4 22 12 18l-6.4 4 1.7-7.8L2 9.6 9 9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3 7 7 .6-5.3 4.6L18.4 22 12 18l-6.4 4 1.7-7.8L2 9.6 9 9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3 7 7 .6-5.3 4.6L18.4 22 12 18l-6.4 4 1.7-7.8L2 9.6 9 9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3 7 7 .6-5.3 4.6L18.4 22 12 18l-6.4 4 1.7-7.8L2 9.6 9 9z"/></svg></div><p>序號過期了私訊一下馬上幫我重開，服務很好。</p><div class="tm-meta"><span>小吳</span><span>RO 整款教學</span></div></div>
+        <div class="tm-card"><div class="tm-stars"><svg viewBox="0 0 24 24"><path d="M12 2l3 7 7 .6-5.3 4.6L18.4 22 12 18l-6.4 4 1.7-7.8L2 9.6 9 9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3 7 7 .6-5.3 4.6L18.4 22 12 18l-6.4 4 1.7-7.8L2 9.6 9 9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3 7 7 .6-5.3 4.6L18.4 22 12 18l-6.4 4 1.7-7.8L2 9.6 9 9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3 7 7 .6-5.3 4.6L18.4 22 12 18l-6.4 4 1.7-7.8L2 9.6 9 9z"/></svg></div><p>內容很完整，希望之後多出幾款遊戲。</p><div class="tm-meta"><span>Kevin</span><span>全站通行</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>

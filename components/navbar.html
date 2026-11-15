@@ -1,0 +1,70 @@
+<!--
+名稱: 捲動變玻璃導覽列
+分類: 導覽
+說明: 頂部導覽列，往下捲動後變成半透明毛玻璃並出現細線；手機版收成選單按鈕，點開為全寬面板。
+來源: 參考 shadcn/ui navigation-menu 與 21st 熱門導覽列，改寫為原生 HTML
+適用: 通用
+高度: 420
+-->
+<style>
+.tn { position: sticky; top: 0; z-index: 50; transition: background .3s var(--ease), border-color .3s var(--ease), backdrop-filter .3s; border-bottom: 1px solid transparent; }
+.tn.is-scrolled { background: color-mix(in srgb, var(--bg) 72%, transparent); backdrop-filter: saturate(1.4) blur(14px); -webkit-backdrop-filter: saturate(1.4) blur(14px); border-bottom-color: var(--line); }
+.tn-inner { display: flex; align-items: center; gap: 24px; height: 64px; }
+.tn-brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: .02em; }
+.tn-mark { width: 26px; height: 26px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #ffd58a, var(--sun) 60%, #8a5410); box-shadow: 0 0 18px -2px var(--sun-glow); }
+.tn-links { display: none; gap: 4px; margin-left: 8px; }
+.tn-links a { padding: 8px 12px; border-radius: var(--r-sm); font-size: var(--fs-sm); color: var(--text-2); transition: color .2s, background .2s; }
+.tn-links a:hover, .tn-links a[aria-current="page"] { color: var(--text); background: var(--surface-2); }
+.tn-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.tn-actions .btn-ghost { display: none; }
+.tn-menu { width: 44px; height: 44px; display: grid; place-items: center; border-radius: var(--r-sm); }
+.tn-menu span, .tn-menu span::before, .tn-menu span::after { content: ""; display: block; width: 18px; height: 1.5px; background: var(--text); border-radius: 2px; transition: transform .3s var(--ease), background .2s; position: relative; }
+.tn-menu span::before { position: absolute; top: -6px; } .tn-menu span::after { position: absolute; top: 6px; }
+.tn.is-open .tn-menu span { background: transparent; }
+.tn.is-open .tn-menu span::before { transform: translateY(6px) rotate(45deg); }
+.tn.is-open .tn-menu span::after { transform: translateY(-6px) rotate(-45deg); }
+.tn-sheet { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .35s var(--ease); background: var(--bg); }
+.tn.is-open .tn-sheet { grid-template-rows: 1fr; border-bottom: 1px solid var(--line); }
+.tn-sheet > div { overflow: hidden; }
+.tn-sheet nav { display: grid; padding: 8px 0 20px; }
+.tn-sheet a { padding: 14px 4px; border-bottom: 1px solid var(--line); font-size: var(--fs-lg); }
+@media (min-width: 860px) {
+  .tn-links { display: flex; } .tn-actions .btn-ghost { display: inline-flex; } .tn-menu, .tn-sheet { display: none; }
+}
+.tn-demo { padding: 48px 0 400px; color: var(--muted); }
+</style>
+
+<header class="tn" id="tn">
+  <div class="container tn-inner">
+    <a href="#" class="tn-brand"><span class="tn-mark" aria-hidden="true"></span>太陽電玩</a>
+    <nav class="tn-links" aria-label="主要選單">
+      <a href="#" aria-current="page">遊戲教學</a>
+      <a href="#">新手指南</a>
+      <a href="#">遊戲行事曆</a>
+      <a href="#">客服說明</a>
+    </nav>
+    <div class="tn-actions">
+      <a href="#" class="btn btn-ghost btn-sm">輸入密碼序號</a>
+      <a href="#" class="btn btn-primary btn-sm">瀏覽教學</a>
+      <button class="tn-menu" aria-label="開啟選單" aria-expanded="false" aria-controls="tn-sheet"><span></span></button>
+    </div>
+  </div>
+  <div class="tn-sheet" id="tn-sheet"><div><nav class="container" aria-label="手機選單">
+    <a href="#">遊戲教學</a><a href="#">新手指南</a><a href="#">遊戲行事曆</a><a href="#">客服說明</a><a href="#">輸入密碼序號</a>
+  </nav></div></div>
+</header>
+<!--demo--><main class="container tn-demo"><p>往下捲動，導覽列會變成毛玻璃。</p></main><!--/demo-->
+
+<script>
+(() => {
+  const nav = document.getElementById('tn');
+  const btn = nav.querySelector('.tn-menu');
+  const onScroll = () => nav.classList.toggle('is-scrolled', scrollY > 8);
+  addEventListener('scroll', onScroll, { passive: true }); onScroll();
+  btn.addEventListener('click', () => {
+    const open = nav.classList.toggle('is-open');
+    btn.setAttribute('aria-expanded', open); btn.setAttribute('aria-label', open ? '關閉選單' : '開啟選單');
+  });
+  addEventListener('keydown', e => { if (e.key === 'Escape' && nav.classList.contains('is-open')) btn.click(); });
+})();
+</script>

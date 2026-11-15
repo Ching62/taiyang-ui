@@ -1,0 +1,46 @@
+<!--
+名稱: 閱讀進度＋回到頂端
+分類: 小工具
+說明: 長頁面專用：頂端一條細細的閱讀進度線，右下角的回到頂端按鈕外圈是進度環，捲過一段距離才出現。
+來源: Magic UI scroll-progress、animated-circular-progress-bar（MIT）改寫為原生 HTML
+適用: 通用
+高度: 520
+-->
+<style>
+.rp-bar { position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 90; background: var(--sun); transform-origin: left; transform: scaleX(0); }
+.rp-top { position: fixed; right: 16px; bottom: 16px; z-index: 90; width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; background: var(--raised); border: 1px solid var(--line); box-shadow: var(--shadow); opacity: 0; transform: translateY(10px); pointer-events: none; transition: opacity .3s var(--ease), transform .3s var(--ease); }
+.rp-top.is-on { opacity: 1; transform: none; pointer-events: auto; }
+.rp-top svg.ring { position: absolute; inset: -1px; width: 48px; height: 48px; transform: rotate(-90deg); }
+.rp-top .ring circle { fill: none; stroke-width: 2; }
+.rp-top .ring .trk { stroke: var(--line); }
+.rp-top .ring .val { stroke: var(--sun); stroke-linecap: round; }
+.rp-top svg.arr { width: 18px; height: 18px; fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.rp-demo p { color: var(--text-2); margin-top: 18px; max-width: 40em; }
+</style>
+
+<div class="rp-bar" id="rp-bar" aria-hidden="true"></div>
+<section class="section rp-demo"><div class="container">
+  <h2 style="font-size:var(--fs-2xl)">往下捲動看看</h2>
+  <p>頂端的金色細線代表讀到哪裡。捲過第一個畫面後，右下角會出現回到頂端按鈕，外圈也會跟著填滿。</p>
+  <p>這段文字只是為了讓頁面夠長。教學頁通常有很多步驟與截圖，讀者需要知道還剩多少，也需要一鍵回到最上面重新選擇章節。</p>
+  <p>按鈕觸控範圍是 48 像素，手機上也好按。開啟「減少動態效果」的使用者，回到頂端會直接跳轉而不是平滑捲動。</p>
+  <div style="height:1400px"></div>
+</div></section>
+<button class="rp-top" id="rp-top" aria-label="回到頂端">
+  <svg class="ring" viewBox="0 0 48 48" aria-hidden="true"><circle class="trk" cx="24" cy="24" r="22"/><circle class="val" id="rp-val" cx="24" cy="24" r="22"/></svg>
+  <svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<script>
+(() => {
+  const bar = document.getElementById('rp-bar'), btn = document.getElementById('rp-top'), val = document.getElementById('rp-val');
+  const C = 2 * Math.PI * 22; val.style.strokeDasharray = C;
+  const upd = () => {
+    const max = document.documentElement.scrollHeight - innerHeight, p = max > 0 ? Math.min(1, scrollY / max) : 0;
+    bar.style.transform = `scaleX(${p})`; val.style.strokeDashoffset = C * (1 - p);
+    btn.classList.toggle('is-on', scrollY > innerHeight * 0.6);
+  };
+  addEventListener('scroll', upd, { passive: true }); addEventListener('resize', upd); upd();
+  btn.addEventListener('click', () => scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }));
+})();
+</script>

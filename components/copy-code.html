@@ -1,0 +1,49 @@
+<!--
+名稱: 一鍵複製區塊
+分類: 小工具
+說明: 放指令、序號、兌換碼的區塊，右上角有複製按鈕，按下後圖示變成打勾並顯示「已複製」。長內容自動換行，不會撐出橫向捲軸。
+來源: Magic UI terminal 與 shadcn/ui 的複製按鈕（MIT）改寫為原生 HTML
+適用: 通用
+高度: 480
+-->
+<style>
+.cc { display: grid; gap: 14px; max-width: 640px; }
+.cc-box { position: relative; border-radius: var(--r-md); background: var(--surface-2); border: 1px solid var(--line); }
+.cc-label { display: flex; justify-content: space-between; align-items: center; padding: 8px 8px 8px 14px; border-bottom: 1px solid var(--line); font-size: var(--fs-xs); color: var(--muted); }
+.cc-code { margin: 0; padding: 14px; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: var(--fs-sm); line-height: 1.7; white-space: pre-wrap; overflow-wrap: anywhere; color: var(--text); }
+.cc-btn { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 0 10px; border-radius: 6px; font-size: var(--fs-xs); font-weight: 600; color: var(--text-2); }
+.cc-btn:hover { background: var(--surface); color: var(--text); }
+.cc-btn svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.cc-btn .ok { display: none; } .cc-btn.is-done { color: var(--up); } .cc-btn.is-done .ok { display: block; } .cc-btn.is-done .cp { display: none; }
+.cc-inline { display: flex; align-items: center; gap: 10px; padding: 6px 6px 6px 16px; border-radius: var(--r-md); border: 1px dashed var(--line-strong); }
+.cc-inline b { font-size: var(--fs-xl); letter-spacing: .12em; flex: 1; min-width: 0; }
+</style>
+
+<section class="section">
+  <div class="container cc">
+    <div class="cc-inline"><span class="muted" style="font-size:var(--fs-sm)">你的密碼序號</span><b class="num" data-copy-src>453058</b><button class="cc-btn" data-copy><svg class="cp" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg><svg class="ok" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg><span>複製</span></button></div>
+    <div class="cc-box">
+      <div class="cc-label"><span>遊戲內聊天輸入</span><button class="cc-btn" data-copy><svg class="cp" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg><svg class="ok" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg><span>複製</span></button></div>
+      <pre class="cc-code" data-copy-src>/兌換 SUNGAME-2026-WINTER-GIFT</pre>
+    </div>
+    <div class="cc-box">
+      <div class="cc-label"><span>在雲端機器執行</span><button class="cc-btn" data-copy><svg class="cp" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg><svg class="ok" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg><span>複製</span></button></div>
+      <pre class="cc-code" data-copy-src>cd ~/bots/8591-postbot && git pull && python3 main.py --mode=live --interval=300 --notify-telegram</pre>
+    </div>
+  </div>
+</section>
+
+<script>
+(() => {
+  const copy = async text => {
+    try { await navigator.clipboard.writeText(text); return true; }
+    catch { const t = document.createElement('textarea'); t.value = text; t.style.position = 'fixed'; t.style.opacity = '0'; document.body.append(t); t.select(); const ok = document.execCommand('copy'); t.remove(); return ok; }
+  };
+  document.querySelectorAll('[data-copy]').forEach(b => b.addEventListener('click', async () => {
+    const src = b.closest('.cc-box, .cc-inline').querySelector('[data-copy-src]');
+    const ok = await copy(src.textContent.trim()); const lab = b.querySelector('span');
+    b.classList.toggle('is-done', ok); lab.textContent = ok ? '已複製' : '請手動複製';
+    setTimeout(() => { b.classList.remove('is-done'); lab.textContent = '複製'; }, 1800);
+  }));
+})();
+</script>

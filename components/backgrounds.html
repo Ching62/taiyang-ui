@@ -1,0 +1,37 @@
+<!--
+名稱: 低調背景紋理組
+分類: 文字與背景
+說明: 五種不搶戲的背景：細點陣、細格線、雜訊顆粒、斜紋、晨曦光暈。全部用 CSS 寫成，不需要圖片，深淺色自動切換，邊緣淡出。複製對應的 class 即可用在任何區塊。
+來源: Magic UI dot-pattern、grid-pattern、noise-texture、striped-pattern、light-rays（MIT）改寫為純 CSS
+適用: 通用
+高度: 760
+-->
+<style>
+.bgx-grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); }
+.bgx { position: relative; height: 220px; border-radius: var(--r-lg); border: 1px solid var(--line); background-color: var(--surface); overflow: hidden; display: flex; align-items: flex-end; padding: 18px; isolation: isolate; }
+.bgx b { font-size: var(--fs-sm); background: var(--surface); padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); }
+.bgx::before { content: ""; position: absolute; inset: 0; z-index: -1; }
+/* 1 細點陣 */
+.bg-dots::before { background-image: radial-gradient(var(--line-strong) 1.1px, transparent 1.2px); background-size: 16px 16px; -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%); mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%); }
+/* 2 細格線 */
+.bg-grid::before { background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: 32px 32px; -webkit-mask-image: linear-gradient(to bottom, #000, transparent 85%); mask-image: linear-gradient(to bottom, #000, transparent 85%); }
+/* 3 雜訊顆粒 */
+.bg-noise::before { opacity: .22; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+/* 4 斜紋 */
+.bg-stripes::before { background-image: repeating-linear-gradient(-45deg, var(--line) 0 1px, transparent 1px 10px); -webkit-mask-image: linear-gradient(to left, #000, transparent); mask-image: linear-gradient(to left, #000, transparent); }
+/* 5 晨曦光暈 */
+.bg-sun::before { background: radial-gradient(60% 80% at 50% -10%, var(--sun-glow), transparent 70%), conic-gradient(from 180deg at 50% -20%, transparent 160deg, var(--sun-soft) 175deg, transparent 190deg); }
+</style>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head" style="margin-bottom:28px"><h2 style="font-size:var(--fs-2xl)">背景紋理</h2><p style="font-size:var(--fs-md)">把 class 加在任何區塊上就能用。</p></div>
+    <div class="bgx-grid">
+      <div class="bgx bg-dots"><b>細點陣 .bg-dots</b></div>
+      <div class="bgx bg-grid"><b>細格線 .bg-grid</b></div>
+      <div class="bgx bg-noise"><b>雜訊顆粒 .bg-noise</b></div>
+      <div class="bgx bg-stripes"><b>斜紋 .bg-stripes</b></div>
+      <div class="bgx bg-sun"><b>晨曦光暈 .bg-sun</b></div>
+    </div>
+  </div>
+</section>

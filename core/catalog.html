@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>太陽電玩組件庫</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/*__TOKENS__*/
+/*__BASE__*/
+.cat-top { border-bottom: 1px solid var(--line); }
+.cat-top .container { display: flex; align-items: center; gap: 16px; min-height: 64px; flex-wrap: wrap; padding-block: 10px; }
+.cat-brand { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+.cat-mark { width: 24px; height: 24px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #ffd58a, var(--sun) 60%, #8a5410); }
+.cat-theme { margin-left: auto; display: inline-flex; padding: 3px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--line); }
+.cat-theme button { min-height: 32px; padding: 0 12px; border-radius: 999px; font-size: var(--fs-xs); font-weight: 600; color: var(--muted); }
+.cat-theme button[aria-pressed="true"] { background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
+.cat-intro { padding-block: clamp(40px, 7vw, 80px) 28px; }
+.cat-intro h1 { font-size: var(--fs-3xl); letter-spacing: -0.025em; }
+.cat-intro p { margin-top: 12px; color: var(--text-2); max-width: 40em; font-size: var(--fs-lg); line-height: 1.6; }
+.cat-tools { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+.cat-tools .container { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding-block: 12px; }
+.cat-search { flex: 1 1 220px; max-width: 320px; }
+.cat-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.cat-chip { display: inline-flex; align-items: center; gap: 6px; min-height: 34px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line-strong); font-size: var(--fs-sm); color: var(--text-2); }
+.cat-chip span { font-size: 11px; font-weight: 700; color: var(--muted); }
+.cat-chip[aria-pressed="true"] { background: var(--text); color: var(--bg); border-color: transparent; }
+.cat-chip[aria-pressed="true"] span { color: var(--bg); opacity: .7; }
+.cat-group { padding-top: 48px; }
+.cat-group > h2 { font-size: var(--fs-xl); padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+.cat-item { padding-block: 28px; border-bottom: 1px solid var(--line); }
+.cat-head { display: grid; gap: 14px; }
+@media (min-width: 900px) { .cat-head { grid-template-columns: 1fr auto; align-items: start; } }
+.cat-name { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
+.cat-name h3 { font-size: var(--fs-lg); }
+.cat-desc { margin-top: 6px; color: var(--text-2); font-size: var(--fs-sm); max-width: 46em; }
+.cat-src { margin-top: 6px; color: var(--muted); font-size: var(--fs-xs); }
+.cat-id { font-size: var(--fs-xs); color: var(--muted); }
+.cat-act { display: flex; flex-wrap: wrap; gap: 8px; }
+.cat-view { display: inline-flex; padding: 3px; border-radius: var(--r-sm); background: var(--surface-2); border: 1px solid var(--line); }
+.cat-view button { min-height: 30px; padding: 0 10px; border-radius: 5px; font-size: var(--fs-xs); font-weight: 600; color: var(--muted); }
+.cat-view button[aria-pressed="true"] { background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
+.cat-frame { margin-top: 18px; border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; background: var(--bg); transition: max-width .35s var(--ease); margin-inline: auto; max-width: 100%; }
+.cat-frame.is-mobile { max-width: 390px; }
+.cat-frame iframe { display: block; width: 100%; border: 0; background: var(--bg); }
+.cat-empty { padding: 60px 0; text-align: center; color: var(--muted); display: none; }
+.cat-foot { padding-block: 48px; color: var(--muted); font-size: var(--fs-sm); }
+</style>
+</head>
+<body>
+<header class="cat-top"><div class="container">
+  <span class="cat-brand"><span class="cat-mark" aria-hidden="true"></span>太陽電玩組件庫</span>
+  <div class="cat-theme" role="group" aria-label="預覽配色">
+    <button data-theme-set="system" aria-pressed="true">跟隨系統</button><button data-theme-set="light" aria-pressed="false">淺色</button><button data-theme-set="dark" aria-pressed="false">深色</button>
+  </div>
+</div></header>
+
+<section class="container cat-intro">
+  <h1>挑一個喜歡的，告訴我名稱就好</h1>
+  <p>這裡是做網頁時可以直接取用的組件。每個都能切換手機／桌機預覽、開新分頁完整試玩、或複製整份程式碼。</p>
+  <p style="margin-top:20px"><a class="btn btn-sun" href="templates/landing.html" target="_blank" rel="noopener">看整頁組合範例</a></p>
+</section>
+
+<div class="cat-tools"><div class="container">
+  <input class="input cat-search" id="q" type="search" placeholder="搜尋組件，例如：表格、價格、密碼" aria-label="搜尋組件">
+  <div class="cat-chips" id="chips" role="group" aria-label="依分類篩選"></div>
+</div></div>
+
+<main class="container" id="list"></main>
+<p class="container cat-empty" id="empty">沒有符合的組件，換個關鍵字試試。</p>
+<footer class="container cat-foot">組件改寫自 Magic UI、shadcn/ui（皆為 MIT 授權）與 21st 熱門設計參考。原始程式碼保存在儲存庫的 originals 資料夾。</footer>
+
+<script>
+const ITEMS = /*__ITEMS__*/[];
+const CATS = /*__CATS__*/[];
+(() => {
+  const $ = id => document.getElementById(id);
+  let cat = '全部', q = '', theme = 'system';
+  const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const src = id => `dist/${id}.html` + (theme === 'system' ? '' : `?theme=${theme}`);
+
+  function chips() {
+    const n = c => ITEMS.filter(i => i.cat === c).length;
+    $('chips').innerHTML = ['全部', ...CATS.filter(n)].map(c => `<button class="cat-chip" data-c="${esc(c)}" aria-pressed="${c === cat}">${esc(c)}<span class="num">${c === '全部' ? ITEMS.length : n(c)}</span></button>`).join('');
+  }
+  function render() {
+    const k = q.toLowerCase();
+    const show = ITEMS.filter(i => (cat === '全部' || i.cat === cat) && (!k || [i.name, i.desc, i.id, i.cat, i.use].join(' ').toLowerCase().includes(k)));
+    let html = '';
+    CATS.forEach(c => {
+      const g = show.filter(i => i.cat === c); if (!g.length) return;
+      html += `<section class="cat-group"><h2>${esc(c)}</h2>` + g.map(i => `
+        <article class="cat-item" id="c-${esc(i.id)}">
+          <div class="cat-head">
+            <div><div class="cat-name"><h3>${esc(i.name)}</h3><span class="badge ${i.use === '對外' ? 'badge-sun' : ''}">${esc(i.use || '通用')}</span><span class="cat-id">${esc(i.id)}</span></div>
+              <p class="cat-desc">${esc(i.desc)}</p><p class="cat-src">來源：${esc(i.source)}</p></div>
+            <div class="cat-act">
+              <div class="cat-view" role="group" aria-label="預覽寬度"><button data-view="desk" aria-pressed="true">桌機</button><button data-view="mobile" aria-pressed="false">手機</button></div>
+              <button class="btn btn-sm" data-copy="${esc(i.id)}">複製程式碼</button>
+              <a class="btn btn-sm" href="dist/${esc(i.id)}.html" target="_blank" rel="noopener">開新分頁</a>
+            </div>
+          </div>
+          <div class="cat-frame"><iframe loading="lazy" title="${esc(i.name)} 預覽" data-id="${esc(i.id)}" src="${src(i.id)}" style="height:${+i.height || 520}px"></iframe></div>
+        </article>`).join('') + '</section>';
+    });
+    $('list').innerHTML = html; $('empty').style.display = show.length ? 'none' : 'block';
+  }
+  $('chips').addEventListener('click', e => { const b = e.target.closest('[data-c]'); if (!b) return; cat = b.dataset.c; chips(); render(); });
+  $('q').addEventListener('input', e => { q = e.target.value.trim(); render(); });
+  $('list').addEventListener('click', async e => {
+    const v = e.target.closest('[data-view]');
+    if (v) { const item = v.closest('.cat-item'); item.querySelectorAll('[data-view]').forEach(b => b.setAttribute('aria-pressed', b === v)); item.querySelector('.cat-frame').classList.toggle('is-mobile', v.dataset.view === 'mobile'); return; }
+    const c = e.target.closest('[data-copy]');
+    if (c) {
+      const old = c.textContent;
+      try { const t = await (await fetch(`dist/${c.dataset.copy}.html`)).text(); await navigator.clipboard.writeText(t); c.textContent = '已複製'; }
+      catch { c.textContent = '複製失敗，請改用開新分頁'; }
+      setTimeout(() => c.textContent = old, 1800);
+    }
+  });
+  document.querySelectorAll('[data-theme-set]').forEach(b => b.addEventListener('click', () => {
+    theme = b.dataset.themeSet;
+    document.querySelectorAll('[data-theme-set]').forEach(x => x.setAttribute('aria-pressed', x === b));
+    theme === 'system' ? document.documentElement.removeAttribute('data-theme') : document.documentElement.setAttribute('data-theme', theme);
+    document.querySelectorAll('.cat-frame iframe').forEach(f => f.src = src(f.dataset.id));
+  }));
+  chips(); render();
+})();
+</script>
+</body>
+</html>

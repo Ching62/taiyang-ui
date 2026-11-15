@@ -1,0 +1,105 @@
+/* ==========================================================
+   太陽電玩組件庫 — 設計變數
+   原則：一道光源（晨曦金），其餘全是石墨灰與細線。
+   淺色為預設；系統深色模式或 data-theme="dark" 時切換深色。
+   ========================================================== */
+:root {
+  /* 底色層級：背景 → 面板 → 浮起 */
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --surface-2: #f0f2f5;
+  --raised: #ffffff;
+
+  /* 文字 */
+  --text: #14161b;
+  --text-2: #4a4f5a;
+  --muted: #7a808c;
+
+  /* 線條 */
+  --line: rgba(20, 22, 27, 0.09);
+  --line-strong: rgba(20, 22, 27, 0.16);
+
+  /* 唯一重點色：晨曦金 */
+  --sun: #c7811a;
+  --sun-soft: rgba(199, 129, 26, 0.12);
+  --sun-glow: rgba(233, 162, 59, 0.28);
+  --on-sun: #ffffff;
+
+  /* 狀態色（只用在狀態，不當裝飾） */
+  --up: #1f8a5b;
+  --down: #c8433a;
+  --warn: #b7791f;
+  --info: #2f6fbd;
+
+  /* 字體 */
+  --font: "Manrope", "Noto Sans TC", system-ui, -apple-system, "PingFang TC", "Microsoft JhengHei", sans-serif;
+
+  /* 字級（1.25 比例） */
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-md: 1rem;
+  --fs-lg: 1.25rem;
+  --fs-xl: 1.5625rem;
+  --fs-2xl: 1.953rem;
+  --fs-3xl: clamp(2rem, 4.2vw, 3.05rem);
+  --fs-4xl: clamp(2.4rem, 6vw, 4.2rem);
+
+  /* 間距 */
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px;
+  --s-6: 32px; --s-7: 48px; --s-8: 64px; --s-9: 96px;
+
+  /* 圓角三級：控制項 / 面板 / 大區塊 */
+  --r-sm: 7px;
+  --r-md: 12px;
+  --r-lg: 20px;
+
+  --shadow: 0 1px 2px rgba(20, 22, 27, 0.05), 0 8px 24px -12px rgba(20, 22, 27, 0.12);
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --container: 1120px;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b0d11;
+    --surface: #111419;
+    --surface-2: #171a21;
+    --raised: #1b1f27;
+    --text: #eceef2;
+    --text-2: #b4b9c3;
+    --muted: #7d8390;
+    --line: rgba(255, 255, 255, 0.075);
+    --line-strong: rgba(255, 255, 255, 0.14);
+    --sun: #eaa543;
+    --sun-soft: rgba(234, 165, 67, 0.12);
+    --sun-glow: rgba(234, 165, 67, 0.22);
+    --on-sun: #1a1206;
+    --up: #3fbf86;
+    --down: #ef6a5f;
+    --warn: #e2b04a;
+    --info: #6ea8ef;
+    --shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 12px 32px -16px rgba(0, 0, 0, 0.6);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0b0d11;
+  --surface: #111419;
+  --surface-2: #171a21;
+  --raised: #1b1f27;
+  --text: #eceef2;
+  --text-2: #b4b9c3;
+  --muted: #7d8390;
+  --line: rgba(255, 255, 255, 0.075);
+  --line-strong: rgba(255, 255, 255, 0.14);
+  --sun: #eaa543;
+  --sun-soft: rgba(234, 165, 67, 0.12);
+  --sun-glow: rgba(234, 165, 67, 0.22);
+  --on-sun: #1a1206;
+  --up: #3fbf86;
+  --down: #ef6a5f;
+  --warn: #e2b04a;
+  --info: #6ea8ef;
+  --shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 12px 32px -16px rgba(0, 0, 0, 0.6);
+  color-scheme: dark;
+}

@@ -1,0 +1,77 @@
+<!--
+名稱: 表單元件組
+分類: 表單
+說明: 一份設定表單示範所有基本元件：輸入框、下拉選單、多行文字、開關、核取方塊、單選分段按鈕、滑桿（附數值），含必填與錯誤提示。
+來源: shadcn/ui input、select、switch、checkbox、radio-group、slider、field（MIT）改寫為原生 HTML
+適用: 通用
+高度: 900
+-->
+<style>
+.fc { max-width: 640px; }
+.fc-form { display: grid; gap: 22px; padding: clamp(20px, 4vw, 32px); border-radius: var(--r-lg); background: var(--surface); border: 1px solid var(--line); }
+.fc-row { display: grid; gap: 22px; }
+@media (min-width: 600px) { .fc-row { grid-template-columns: 1fr 1fr; } }
+.fc .select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237a808c' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; padding-right: 40px; }
+.req { color: var(--sun); margin-left: 2px; }
+/* 開關 */
+.sw { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 44px; cursor: pointer; }
+.sw input { appearance: none; flex: none; width: 42px; height: 24px; border-radius: 999px; background: var(--line-strong); position: relative; cursor: pointer; transition: background .2s; }
+.sw input::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.25); transition: transform .25s var(--ease); }
+.sw input:checked { background: var(--sun); }
+.sw input:checked::after { transform: translateX(18px); }
+.sw small { display: block; color: var(--muted); font-size: var(--fs-xs); }
+/* 核取 */
+.ck { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; font-size: var(--fs-sm); min-height: 28px; }
+.ck input { appearance: none; flex: none; width: 18px; height: 18px; margin-top: 3px; border-radius: 5px; border: 1.5px solid var(--line-strong); display: grid; place-items: center; cursor: pointer; transition: all .15s; }
+.ck input:checked { background: var(--text); border-color: var(--text); }
+.ck input:checked::after { content: ""; width: 9px; height: 5px; border: 2px solid var(--bg); border-top: 0; border-right: 0; transform: rotate(-45deg) translate(1px, -1px); }
+/* 分段單選 */
+.seg { display: flex; padding: 3px; border-radius: var(--r-sm); background: var(--surface-2); border: 1px solid var(--line); }
+.seg label { flex: 1; position: relative; }
+.seg input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+.seg span { display: grid; place-items: center; min-height: 36px; border-radius: 5px; font-size: var(--fs-sm); font-weight: 600; color: var(--text-2); transition: all .2s; }
+.seg input:checked + span { background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
+.seg input:focus-visible + span { outline: 2px solid var(--sun); }
+/* 滑桿 */
+.rg-top { display: flex; justify-content: space-between; }
+.rg input { width: 100%; appearance: none; height: 24px; background: transparent; cursor: pointer; }
+.rg input::-webkit-slider-runnable-track { height: 4px; border-radius: 4px; background: linear-gradient(var(--sun), var(--sun)) 0 / var(--p, 50%) 100% no-repeat, var(--line-strong); }
+.rg input::-moz-range-track { height: 4px; border-radius: 4px; background: var(--line-strong); }
+.rg input::-moz-range-progress { height: 4px; border-radius: 4px; background: var(--sun); }
+.rg input::-webkit-slider-thumb { appearance: none; width: 18px; height: 18px; margin-top: -7px; border-radius: 50%; background: #fff; border: 2px solid var(--sun); box-shadow: 0 1px 4px rgba(0,0,0,.2); }
+.rg input::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: #fff; border: 2px solid var(--sun); }
+.fc-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; padding-top: 6px; border-top: 1px solid var(--line); padding-top: 20px; }
+</style>
+
+<section class="section">
+  <div class="container fc">
+    <div class="section-head" style="margin-bottom:28px"><h2 style="font-size:var(--fs-2xl)">新增教學</h2><p style="font-size:var(--fs-md)">填好後按儲存，教學會立即出現在網站上。</p></div>
+    <form class="fc-form" id="fc-form" novalidate>
+      <div class="field" id="fc-f-title"><label class="label" for="fc-title">教學標題<span class="req">*</span></label><input class="input" id="fc-title" placeholder="例如：弓箭手二轉完整流程"><span class="hint">建議 20 字以內，清楚說明這份教學教什麼。</span></div>
+      <div class="fc-row">
+        <div class="field"><label class="label" for="fc-game">所屬遊戲</label><select class="select" id="fc-game"><option>楓之谷經典</option><option>原神</option><option>天堂W</option></select></div>
+        <div class="field"><span class="label">難度</span><div class="seg" role="radiogroup" aria-label="難度"><label><input type="radio" name="lv" checked><span>入門</span></label><label><input type="radio" name="lv"><span>中階</span></label><label><input type="radio" name="lv"><span>進階</span></label></div></div>
+      </div>
+      <div class="field"><label class="label" for="fc-sum">簡介</label><textarea class="textarea" id="fc-sum" placeholder="兩三句話介紹這份教學的重點"></textarea></div>
+      <div class="field rg"><div class="rg-top"><label class="label" for="fc-days">觀看天數</label><b class="num" id="fc-days-v">1 天</b></div><input type="range" id="fc-days" min="1" max="7" value="1"></div>
+      <label class="sw"><span><b style="font-size:var(--fs-sm)">需要密碼序號</b><small>關閉後所有人都能免費觀看</small></span><input type="checkbox" checked role="switch"></label>
+      <label class="ck"><input type="checkbox"><span>儲存後在首頁「新教學」區塊顯示</span></label>
+      <div class="fc-actions"><button type="button" class="btn btn-ghost">取消</button><button class="btn btn-primary" type="submit">儲存教學</button></div>
+    </form>
+  </div>
+</section>
+
+<script>
+(() => {
+  const r = document.getElementById('fc-days'), v = document.getElementById('fc-days-v');
+  const upd = () => { v.textContent = r.value + ' 天'; r.style.setProperty('--p', ((r.value - r.min) / (r.max - r.min) * 100) + '%'); };
+  r.addEventListener('input', upd); upd();
+  const f = document.getElementById('fc-f-title'), t = document.getElementById('fc-title'), h = f.querySelector('.hint'), base = h.textContent;
+  document.getElementById('fc-form').addEventListener('submit', e => {
+    e.preventDefault();
+    if (!t.value.trim()) { f.classList.add('is-error'); h.textContent = '請填寫教學標題。'; t.focus(); return; }
+    f.classList.remove('is-error'); h.textContent = '已儲存（示範）。';
+  });
+  t.addEventListener('input', () => { f.classList.remove('is-error'); h.textContent = base; });
+})();
+</script>

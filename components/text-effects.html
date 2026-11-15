@@ -1,0 +1,59 @@
+<!--
+名稱: 文字動態效果組
+分類: 文字與背景
+說明: 四種低調的文字效果：模糊淡入（逐行出現）、輪替詞（固定位置換字）、光澤掃過、打字機。整頁只挑一種用，當作開場的唯一亮點。
+來源: Magic UI blur-fade、word-rotate、animated-shiny-text、typing-animation（MIT）改寫為原生 HTML
+適用: 對外
+高度: 760
+-->
+<style>
+.tx-grid { display: grid; gap: 14px; }
+@media (min-width: 820px) { .tx-grid { grid-template-columns: 1fr 1fr; } }
+.tx-cell { padding: 28px; border-radius: var(--r-lg); border: 1px solid var(--line); background: var(--surface); min-height: 200px; display: flex; flex-direction: column; justify-content: space-between; gap: 20px; }
+.tx-cell > small { color: var(--muted); font-size: var(--fs-xs); }
+.tx-cell .big { font-size: clamp(1.5rem, 3.4vw, 2.2rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.3; }
+.tx-replay { align-self: flex-start; }
+/* 模糊淡入 */
+.bf > * { opacity: 0; filter: blur(8px); transform: translateY(8px); }
+.bf.is-on > * { animation: bf .7s var(--ease) forwards; animation-delay: calc(var(--i) * 120ms); }
+@keyframes bf { to { opacity: 1; filter: blur(0); transform: none; } }
+/* 輪替詞 */
+.wr { display: inline-grid; vertical-align: bottom; overflow: hidden; height: 1.3em; }
+.wr span { grid-area: 1 / 1; transition: transform .5s var(--ease), opacity .5s var(--ease), filter .5s; transform: translateY(100%); opacity: 0; filter: blur(4px); color: var(--sun); }
+.wr span.is-on { transform: none; opacity: 1; filter: none; }
+.wr span.is-out { transform: translateY(-100%); opacity: 0; }
+/* 光澤 */
+.sh-t { background: linear-gradient(100deg, var(--text-2) 40%, var(--text) 50%, var(--text-2) 60%) 0 0 / 250% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: sh-t 3.5s linear infinite; }
+@keyframes sh-t { from { background-position: 100% 0; } to { background-position: -150% 0; } }
+/* 打字機 */
+.tp::after { content: ""; display: inline-block; width: 2px; height: 1em; margin-left: 3px; vertical-align: -0.12em; background: var(--sun); animation: tp-blink 1s steps(1) infinite; }
+@keyframes tp-blink { 50% { opacity: 0; } }
+</style>
+
+<section class="section">
+  <div class="container tx-grid">
+    <div class="tx-cell"><small>模糊淡入</small><div class="big bf" id="bf"><div style="--i:0">新版本上線</div><div style="--i:1">教學同步更新</div></div><button class="btn btn-sm tx-replay" id="bf-r">重播</button></div>
+    <div class="tx-cell"><small>輪替詞</small><div class="big">一次搞定你的 <span class="wr" id="wr"><span>楓之谷</span><span>原神</span><span>天堂W</span><span>仙境傳說</span></span></div></div>
+    <div class="tx-cell"><small>光澤掃過</small><div class="big sh-t">本週限定：整款教學 85 折</div></div>
+    <div class="tx-cell"><small>打字機</small><div class="big tp" id="tp" aria-label="輸入你的密碼序號，馬上開始"></div><button class="btn btn-sm tx-replay" id="tp-r">重播</button></div>
+  </div>
+</section>
+
+<script>
+(() => {
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // 模糊淡入：進入畫面時觸發
+  const bf = document.getElementById('bf');
+  const play = () => { bf.classList.remove('is-on'); void bf.offsetWidth; bf.classList.add('is-on'); };
+  new IntersectionObserver(es => es[0].isIntersecting && play(), { threshold: .5 }).observe(bf);
+  document.getElementById('bf-r').onclick = play;
+  // 輪替詞
+  const ws = [...document.querySelectorAll('#wr span')]; let wi = 0; ws[0].classList.add('is-on');
+  const wr = document.getElementById('wr'); wr.style.width = Math.max(...ws.map(w => w.getBoundingClientRect().width)) + 'px';
+  if (!still) setInterval(() => { ws[wi].classList.replace('is-on', 'is-out'); const prev = ws[wi]; setTimeout(() => prev.classList.remove('is-out'), 500); wi = (wi + 1) % ws.length; ws[wi].classList.add('is-on'); }, 2200);
+  // 打字機
+  const tp = document.getElementById('tp'), txt = tp.getAttribute('aria-label'); let tt;
+  const type = () => { clearInterval(tt); let i = 0; tp.textContent = ''; if (still) { tp.textContent = txt; return; } tt = setInterval(() => { tp.textContent = txt.slice(0, ++i); if (i >= txt.length) clearInterval(tt); }, 90); };
+  type(); document.getElementById('tp-r').onclick = type;
+})();
+</script>

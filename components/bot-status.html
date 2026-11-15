@@ -1,0 +1,64 @@
+<!--
+名稱: 機器人／服務狀態面板
+分類: 資料呈現
+說明: 監控多個機器人或服務是否正常：狀態燈（運作中會有呼吸光暈）、最後回報時間、今日處理量、啟停開關。異常的會排到最上面並說明原因。
+來源: 參考 21st Status 分類與 Magic UI animated-circular-progress-bar，原創
+適用: 自用
+高度: 600
+-->
+<style>
+.bs-head { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: end; margin-bottom: 16px; }
+.bs-head h2 { font-size: var(--fs-2xl); }
+.bs-sum { display: flex; gap: 14px; font-size: var(--fs-sm); color: var(--muted); }
+.bs-sum b { color: var(--text); }
+.bs-list { display: grid; gap: 10px; }
+.bs { display: grid; grid-template-columns: auto 1fr auto; gap: 6px 16px; align-items: center; padding: 16px 18px; border-radius: var(--r-md); background: var(--surface); border: 1px solid var(--line); }
+.bs.is-bad { border-color: color-mix(in srgb, var(--down) 45%, transparent); }
+.bs-lamp { width: 10px; height: 10px; border-radius: 50%; position: relative; background: var(--muted); }
+.bs-lamp.ok { background: var(--up); } .bs-lamp.bad { background: var(--down); } .bs-lamp.warn { background: var(--warn); }
+.bs-lamp.ok::after, .bs-lamp.bad::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; background: inherit; opacity: .35; animation: bs-pulse 2s infinite var(--ease); }
+@keyframes bs-pulse { 0% { transform: scale(.6); opacity: .5; } 100% { transform: scale(1.8); opacity: 0; } }
+.bs-name b { font-size: var(--fs-md); }
+.bs-name span { display: block; font-size: var(--fs-xs); color: var(--muted); }
+.bs-meta { grid-column: 2 / -1; display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: var(--fs-xs); color: var(--text-2); }
+.bs-meta b { font-weight: 700; }
+.bs-why { grid-column: 2 / -1; font-size: var(--fs-sm); color: var(--down); }
+@media (min-width: 760px) { .bs { grid-template-columns: auto 1.2fr 1.6fr auto; } .bs-meta { grid-column: auto; } .bs input { grid-column: 4; } .bs-why { grid-column: 2 / -1; } }
+.bs input { grid-row: 1; grid-column: 3; justify-self: end; appearance: none; width: 42px; height: 24px; border-radius: 999px; background: var(--line-strong); position: relative; cursor: pointer; transition: background .2s; }
+.bs input::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: transform .25s var(--ease); }
+.bs input:checked { background: var(--up); } .bs input:checked::after { transform: translateX(18px); }
+</style>
+
+<section class="section">
+  <div class="container">
+    <div class="bs-head"><h2>機器人狀態</h2><div class="bs-sum" id="bs-sum"></div></div>
+    <div class="bs-list" id="bs-list"></div>
+  </div>
+</section>
+
+<script>
+(() => {
+  // state: ok 運作中、warn 延遲、bad 異常、off 已停用
+  const BOTS = [
+    { name: '8591 自動刊登', host: 'InstaBox 雲端機', state: 'ok', last: 1, today: '刊登 42 筆', on: true },
+    { name: '幣安合約模擬盤', host: 'InstaBox 雲端機', state: 'bad', last: 18, today: '下單 0 筆', why: 'API 連線逾時，已自動重試 3 次失敗。請檢查金鑰是否過期。', on: true },
+    { name: '遊戲情報雷達', host: '每週一 09:00 排程', state: 'warn', last: 95, today: '掃描 1 次', why: '', on: true },
+    { name: '自動移交通知', host: '家用電腦', state: 'off', last: 0, today: '—', on: false }
+  ];
+  const label = { ok: '運作中', warn: '延遲', bad: '異常', off: '已停用' }, rank = { bad: 0, warn: 1, ok: 2, off: 3 };
+  const ago = m => !m ? '—' : m < 60 ? `${m} 分鐘前` : `${Math.floor(m / 60)} 小時前`;
+  function render() {
+    const list = [...BOTS].sort((a, b) => rank[a.state] - rank[b.state]);
+    document.getElementById('bs-list').innerHTML = list.map(b => `<div class="bs ${b.state === 'bad' ? 'is-bad' : ''}">
+      <span class="bs-lamp ${b.state}" role="img" aria-label="${label[b.state]}"></span>
+      <div class="bs-name"><b>${b.name}</b><span>${b.host}</span></div>
+      <div class="bs-meta"><span>狀態 <b>${label[b.state]}</b></span><span>最後回報 <b class="num">${ago(b.last)}</b></span><span>今日 <b class="num">${b.today}</b></span></div>
+      <input type="checkbox" role="switch" ${b.on ? 'checked' : ''} data-n="${b.name}" aria-label="啟用${b.name}">
+      ${b.why ? `<div class="bs-why">${b.why}</div>` : ''}</div>`).join('');
+    const c = s => BOTS.filter(b => b.state === s).length;
+    document.getElementById('bs-sum').innerHTML = `<span>正常 <b class="num">${c('ok')}</b></span><span>需注意 <b class="num">${c('bad') + c('warn')}</b></span><span>停用 <b class="num">${c('off')}</b></span>`;
+  }
+  document.getElementById('bs-list').addEventListener('change', e => { const b = BOTS.find(x => x.name === e.target.dataset.n); b.on = e.target.checked; b.state = b.on ? 'ok' : 'off'; b.why = ''; b.last = b.on ? 1 : 0; render(); });
+  render();
+})();
+</script>

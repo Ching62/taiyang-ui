@@ -1,0 +1,68 @@
+<!--
+名稱: 對話框與側拉面板
+分類: 回饋提示
+說明: 兩種彈出層：置中確認對話框（危險操作用紅色按鈕）與從右側滑出的編輯面板（手機上從下方升起）。可按 Esc 或點背景關閉，開啟時背景不會捲動。
+來源: shadcn/ui alert-dialog、sheet、drawer（MIT）改寫為原生 dialog 元素
+適用: 通用
+高度: 520
+-->
+<style>
+.dl-demo { display: flex; flex-wrap: wrap; gap: 10px; }
+dialog.dl { border: 1px solid var(--line-strong); padding: 0; color: var(--text); background: var(--raised); border-radius: var(--r-lg); box-shadow: 0 30px 80px -20px rgba(0,0,0,.45); width: min(calc(100% - 32px), 440px); }
+dialog.dl::backdrop { background: rgba(5, 6, 9, .5); backdrop-filter: blur(3px); }
+dialog.dl[open] { animation: dl-pop .22s var(--ease); }
+@keyframes dl-pop { from { opacity: 0; transform: scale(.96); } }
+.dl-body { padding: 24px; }
+.dl-body h2 { font-size: var(--fs-lg); }
+.dl-body p { margin-top: 8px; color: var(--text-2); font-size: var(--fs-sm); }
+.dl-foot { display: flex; flex-wrap: wrap-reverse; justify-content: flex-end; gap: 8px; padding: 16px 24px; border-top: 1px solid var(--line); background: var(--surface); border-radius: 0 0 var(--r-lg) var(--r-lg); }
+.btn-danger { background: var(--down); color: #fff; border-color: transparent; }
+.btn-danger:hover { background: var(--down); filter: brightness(1.08); }
+/* 側拉面板 */
+dialog.sh { margin: 0; border: 0; padding: 0; color: var(--text); background: var(--raised); max-width: none; max-height: none; position: fixed; inset: auto 0 0 0; width: 100%; height: min(85vh, 640px); border-radius: var(--r-lg) var(--r-lg) 0 0; border-top: 1px solid var(--line-strong); display: none; flex-direction: column; }
+dialog.sh[open] { display: flex; animation: sh-up .3s var(--ease); }
+dialog.sh::backdrop { background: rgba(5, 6, 9, .5); }
+@keyframes sh-up { from { transform: translateY(100%); } }
+@media (min-width: 700px) { dialog.sh { inset: 0 0 0 auto; width: 420px; height: 100%; border-radius: 0; border-top: 0; border-left: 1px solid var(--line-strong); } dialog.sh[open] { animation-name: sh-left; } @keyframes sh-left { from { transform: translateX(100%); } } }
+.sh-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 18px 20px; border-bottom: 1px solid var(--line); }
+.sh-head h2 { font-size: var(--fs-lg); }
+.sh-x { width: 40px; height: 40px; display: grid; place-items: center; border-radius: var(--r-sm); color: var(--muted); }
+.sh-x:hover { background: var(--surface-2); color: var(--text); }
+.sh-main { flex: 1; overflow-y: auto; padding: 20px; display: grid; gap: 18px; align-content: start; }
+.sh-foot { display: flex; gap: 8px; justify-content: flex-end; padding: 16px 20px; border-top: 1px solid var(--line); }
+body.is-locked { overflow: hidden; }
+</style>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head" style="margin-bottom:24px"><h2 style="font-size:var(--fs-2xl)">彈出層</h2><p style="font-size:var(--fs-md)">確認危險操作，或在不離開頁面的情況下編輯資料。</p></div>
+    <div class="dl-demo"><button class="btn" data-open="dl-del">刪除序號</button><button class="btn btn-primary" data-open="sh-edit">編輯序號</button></div>
+  </div>
+</section>
+
+<dialog class="dl" id="dl-del" aria-labelledby="dl-del-t">
+  <div class="dl-body"><h2 id="dl-del-t">刪除序號 453058？</h2><p>刪除後這位買家就無法再觀看教學，這個動作無法復原。</p></div>
+  <div class="dl-foot"><button class="btn" data-close>取消</button><button class="btn btn-danger" data-close>刪除序號</button></div>
+</dialog>
+
+<dialog class="sh" id="sh-edit" aria-labelledby="sh-edit-t">
+  <div class="sh-head"><h2 id="sh-edit-t">編輯序號</h2><button class="sh-x" data-close aria-label="關閉">✕</button></div>
+  <div class="sh-main">
+    <div class="field"><label class="label" for="sh-c">密碼序號</label><input class="input num" id="sh-c" value="453058"></div>
+    <div class="field"><label class="label" for="sh-d">有效天數</label><select class="select" id="sh-d"><option>1 天</option><option>3 天</option><option>7 天</option></select></div>
+    <div class="field"><label class="label" for="sh-n">最多裝置數</label><input class="input num" id="sh-n" type="number" min="1" value="2"></div>
+    <div class="field"><label class="label" for="sh-m">備註</label><textarea class="textarea" id="sh-m" placeholder="例如：回購客，重新開通"></textarea></div>
+  </div>
+  <div class="sh-foot"><button class="btn" data-close>取消</button><button class="btn btn-primary" data-close>儲存變更</button></div>
+</dialog>
+
+<script>
+(() => {
+  document.querySelectorAll('[data-open]').forEach(b => b.addEventListener('click', () => { const d = document.getElementById(b.dataset.open); d.showModal(); document.body.classList.add('is-locked'); }));
+  document.querySelectorAll('dialog').forEach(d => {
+    d.addEventListener('close', () => document.body.classList.remove('is-locked'));
+    d.addEventListener('click', e => { if (e.target === d) d.close(); }); // 點背景關閉
+    d.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => d.close()));
+  });
+})();
+</script>

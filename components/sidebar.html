@@ -1,0 +1,86 @@
+<!--
+名稱: 後台側邊欄
+分類: 導覽
+說明: 後台或工具頁的左側選單，分組、目前頁面標示、數字提醒；桌機可收合成圖示列，手機變成從左滑出的抽屜。
+來源: 參考 shadcn/ui sidebar-07 區塊，改寫為原生 HTML
+適用: 自用
+高度: 560
+-->
+<style>
+.sb-wrap { display: flex; min-height: 100vh; }
+.sb { position: fixed; inset: 0 auto 0 0; z-index: 40; width: 264px; background: var(--surface); border-right: 1px solid var(--line); display: flex; flex-direction: column; transform: translateX(-100%); transition: transform .3s var(--ease), width .3s var(--ease); }
+.sb.is-open { transform: none; box-shadow: var(--shadow); }
+.sb-head { display: flex; align-items: center; gap: 10px; height: 60px; padding: 0 16px; border-bottom: 1px solid var(--line); font-weight: 700; white-space: nowrap; overflow: hidden; }
+.sb-logo { width: 28px; height: 28px; flex: none; border-radius: 8px; background: var(--text); color: var(--bg); display: grid; place-items: center; font-size: 13px; }
+.sb-body { flex: 1; overflow-y: auto; padding: 12px 10px; }
+.sb-group + .sb-group { margin-top: 18px; }
+.sb-title { padding: 0 10px 6px; font-size: var(--fs-xs); color: var(--muted); font-weight: 600; white-space: nowrap; }
+.sb-item { display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 10px; border-radius: var(--r-sm); color: var(--text-2); font-size: var(--fs-sm); white-space: nowrap; position: relative; transition: background .15s, color .15s; }
+.sb-item svg { width: 18px; height: 18px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.sb-item:hover { background: var(--surface-2); color: var(--text); }
+.sb-item[aria-current="page"] { background: var(--surface-2); color: var(--text); font-weight: 600; }
+.sb-item[aria-current="page"]::before { content: ""; position: absolute; left: -10px; top: 10px; bottom: 10px; width: 2px; border-radius: 2px; background: var(--sun); }
+.sb-count { margin-left: auto; font-size: 11px; font-weight: 700; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 10px; display: grid; place-items: center; background: var(--sun-soft); color: var(--sun); }
+.sb-foot { border-top: 1px solid var(--line); padding: 10px; }
+.sb-user { display: flex; align-items: center; gap: 10px; padding: 8px 10px; white-space: nowrap; overflow: hidden; }
+.sb-avatar { width: 32px; height: 32px; flex: none; border-radius: 50%; background: var(--surface-2); border: 1px solid var(--line-strong); display: grid; place-items: center; font-size: 13px; font-weight: 700; }
+.sb-scrim { position: fixed; inset: 0; z-index: 30; background: rgba(0,0,0,.4); opacity: 0; pointer-events: none; transition: opacity .3s; }
+.sb.is-open + .sb-scrim { opacity: 1; pointer-events: auto; }
+.sb-main { flex: 1; min-width: 0; }
+.sb-bar { display: flex; align-items: center; gap: 10px; height: 60px; padding: 0 16px; border-bottom: 1px solid var(--line); }
+.sb-toggle { width: 40px; height: 40px; display: grid; place-items: center; border-radius: var(--r-sm); color: var(--text-2); }
+.sb-toggle:hover { background: var(--surface-2); color: var(--text); }
+.sb-toggle svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.7; }
+.sb-content { padding: 24px 16px; }
+.sb-content h1 { font-size: var(--fs-xl); }
+.sb-ph { margin-top: 18px; height: 180px; border: 1px dashed var(--line-strong); border-radius: var(--r-md); }
+@media (min-width: 900px) {
+  .sb { position: sticky; top: 0; height: 100vh; transform: none; box-shadow: none; }
+  .sb-scrim { display: none; }
+  .sb.is-collapsed { width: 64px; }
+  .sb.is-collapsed .sb-title, .sb.is-collapsed .sb-label, .sb.is-collapsed .sb-count, .sb.is-collapsed .sb-name { opacity: 0; pointer-events: none; }
+  .sb-content { padding: 32px; }
+}
+</style>
+
+<div class="sb-wrap">
+  <aside class="sb" id="sb" aria-label="側邊選單">
+    <div class="sb-head"><span class="sb-logo">太</span><span class="sb-name">太陽電玩後台</span></div>
+    <div class="sb-body">
+      <div class="sb-group">
+        <div class="sb-title">總覽</div>
+        <a class="sb-item" href="#" aria-current="page"><svg viewBox="0 0 24 24"><path d="M3 12l9-8 9 8M5 10v10h14V10"/></svg><span class="sb-label">首頁儀表板</span></a>
+        <a class="sb-item" href="#"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg><span class="sb-label">訪客紀錄</span></a>
+      </div>
+      <div class="sb-group">
+        <div class="sb-title">內容管理</div>
+        <a class="sb-item" href="#"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM4 9h16"/></svg><span class="sb-label">遊戲與教學</span></a>
+        <a class="sb-item" href="#"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg><span class="sb-label">密碼序號</span><span class="sb-count num">12</span></a>
+        <a class="sb-item" href="#"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg><span class="sb-label">遊戲行事曆</span></a>
+      </div>
+      <div class="sb-group">
+        <div class="sb-title">系統</div>
+        <a class="sb-item" href="#"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/></svg><span class="sb-label">設定</span></a>
+      </div>
+    </div>
+    <div class="sb-foot"><div class="sb-user"><span class="sb-avatar">C</span><span class="sb-name"><b style="font-size:var(--fs-sm)">Ching</b><br><span class="hint">管理員</span></span></div></div>
+  </aside>
+  <div class="sb-scrim" id="sb-scrim"></div>
+  <div class="sb-main">
+    <div class="sb-bar">
+      <button class="sb-toggle" id="sb-toggle" aria-label="切換側邊選單"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></svg></button>
+      <span class="muted" style="font-size:var(--fs-sm)">首頁儀表板</span>
+    </div>
+    <div class="sb-content"><h1>首頁儀表板</h1><p class="muted">這裡放頁面內容。</p><div class="sb-ph"></div></div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const sb = document.getElementById('sb'), t = document.getElementById('sb-toggle'), scrim = document.getElementById('sb-scrim');
+  const desk = matchMedia('(min-width: 900px)');
+  t.addEventListener('click', () => desk.matches ? sb.classList.toggle('is-collapsed') : sb.classList.toggle('is-open'));
+  scrim.addEventListener('click', () => sb.classList.remove('is-open'));
+  addEventListener('keydown', e => { if (e.key === 'Escape') sb.classList.remove('is-open'); });
+})();
+</script>

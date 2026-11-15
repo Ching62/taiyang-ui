@@ -1,0 +1,107 @@
+<!--
+名稱: 可排序篩選資料表
+分類: 資料呈現
+說明: 後台資料表：搜尋、狀態篩選標籤（附數量）、點欄位標題排序、分頁、勾選批次操作。手機上每列自動變成卡片，絕不出現左右捲動。
+來源: shadcn/ui table、dashboard-01 資料表（MIT）改寫為原生 HTML
+適用: 自用
+高度: 900
+-->
+<style>
+.dt-bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.dt-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.dt-chip { display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line-strong); font-size: var(--fs-sm); color: var(--text-2); }
+.dt-chip span { font-size: 11px; font-weight: 700; color: var(--muted); }
+.dt-chip[aria-pressed="true"] { background: var(--text); color: var(--bg); border-color: transparent; }
+.dt-chip[aria-pressed="true"] span { color: var(--bg); opacity: .7; }
+.dt-search { width: min(100%, 260px); }
+.dt-bulk { display: none; align-items: center; gap: 10px; padding: 8px 12px; margin-bottom: 10px; border-radius: var(--r-sm); background: var(--sun-soft); font-size: var(--fs-sm); }
+.dt-bulk.is-on { display: flex; }
+.dt { width: 100%; border-collapse: separate; border-spacing: 0; font-size: var(--fs-sm); background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; table-layout: fixed; }
+.dt th, .dt td { padding: 12px 14px; text-align: left; border-top: 1px solid var(--line); vertical-align: middle; overflow-wrap: anywhere; }
+.dt thead th { border-top: 0; background: var(--surface-2); font-size: var(--fs-xs); font-weight: 600; color: var(--muted); }
+.dt th button { display: inline-flex; align-items: center; gap: 4px; font-weight: 600; color: inherit; min-height: 28px; }
+.dt th button::after { content: "↕"; opacity: .4; font-size: 11px; }
+.dt th[aria-sort="ascending"] button::after { content: "↑"; opacity: 1; color: var(--sun); }
+.dt th[aria-sort="descending"] button::after { content: "↓"; opacity: 1; color: var(--sun); }
+.dt tbody tr:hover td { background: var(--surface-2); }
+.dt tbody tr.is-sel td { background: var(--sun-soft); }
+.dt .r { text-align: right; }
+.dt input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--sun); cursor: pointer; }
+.dt-foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; margin-top: 14px; font-size: var(--fs-sm); color: var(--muted); }
+.dt-pages { display: flex; gap: 6px; }
+.dt-empty td { text-align: center; padding: 40px 14px; color: var(--muted); }
+/* 手機：表格變卡片 */
+@media (max-width: 760px) {
+  .dt, .dt tbody, .dt tr, .dt td { display: block; width: 100%; }
+  .dt { border: 0; background: none; }
+  .dt thead { display: none; }
+  .dt tbody tr { border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface); margin-bottom: 10px; padding: 6px 0; position: relative; }
+  .dt td { border: 0; padding: 6px 14px; display: grid; grid-template-columns: 7em 1fr; gap: 10px; }
+  .dt td > * { justify-self: start; }
+  .dt td::before { content: attr(data-label); color: var(--muted); font-size: var(--fs-xs); padding-top: 2px; }
+  .dt td.ck { position: absolute; right: 4px; top: 4px; width: auto; display: block; }
+  .dt td.ck::before { content: none; }
+  .dt .r { text-align: left; }
+  .dt tbody tr:hover td { background: none; }
+}
+</style>
+
+<section class="section">
+  <div class="container">
+    <div class="dt-bar">
+      <div class="dt-chips" id="dt-chips" role="group" aria-label="依狀態篩選"></div>
+      <input class="input dt-search" id="dt-q" type="search" placeholder="搜尋序號或遊戲" aria-label="搜尋">
+    </div>
+    <div class="dt-bulk" id="dt-bulk" role="status"><b id="dt-bulk-n">0</b> 筆已選取<button class="btn btn-sm" style="margin-left:auto">延長 1 天</button><button class="btn btn-sm">停用</button></div>
+    <table class="dt">
+      <colgroup><col style="width:48px"><col><col><col style="width:16%"><col style="width:14%"><col style="width:16%"></colgroup>
+      <thead><tr>
+        <th scope="col"><input type="checkbox" id="dt-all" aria-label="全選"></th>
+        <th scope="col" data-k="code"><button>密碼序號</button></th>
+        <th scope="col" data-k="game"><button>遊戲</button></th>
+        <th scope="col" data-k="status"><button>狀態</button></th>
+        <th scope="col" data-k="dev" class="r"><button>裝置數</button></th>
+        <th scope="col" data-k="left" class="r"><button>剩餘時間</button></th>
+      </tr></thead>
+      <tbody id="dt-body"></tbody>
+    </table>
+    <div class="dt-foot"><span id="dt-info"></span><div class="dt-pages"><button class="btn btn-sm" id="dt-prev">上一頁</button><button class="btn btn-sm" id="dt-next">下一頁</button></div></div>
+  </div>
+</section>
+
+<script>
+(() => {
+  const GAMES = ['楓之谷經典', '原神', '天堂W', '仙境傳說'], ST = { live: '使用中', idle: '未使用', exp: '已過期' };
+  const rows = Array.from({ length: 23 }, (_, i) => { const s = ['live', 'idle', 'exp'][i % 3 === 0 ? 2 : i % 2]; return { id: i, code: String(300000 + ((i * 7919) % 600000)), game: GAMES[i % 4], status: s, dev: 1 + (i % 3), left: s === 'exp' ? 0 : 2 + ((i * 5) % 46) }; });
+  let filter = 'all', q = '', sortK = 'left', sortDir = -1, page = 0, sel = new Set();
+  const PER = 8, $ = id => document.getElementById(id);
+  const badge = s => `<span class="badge ${s === 'live' ? 'badge-up' : s === 'exp' ? 'badge-down' : ''}">${s !== 'idle' ? '<span class="dot"></span>' : ''}${ST[s]}</span>`;
+  const view = () => rows.filter(r => (filter === 'all' || r.status === filter) && (!q || r.code.includes(q) || r.game.includes(q)))
+    .sort((a, b) => (a[sortK] > b[sortK] ? 1 : a[sortK] < b[sortK] ? -1 : 0) * sortDir);
+  function chips() {
+    const c = { all: rows.length, live: 0, idle: 0, exp: 0 }; rows.forEach(r => c[r.status]++);
+    $('dt-chips').innerHTML = [['all', '全部'], ['live', '使用中'], ['idle', '未使用'], ['exp', '已過期']].map(([k, l]) => `<button class="dt-chip" data-f="${k}" aria-pressed="${filter === k}">${l}<span class="num">${c[k]}</span></button>`).join('');
+  }
+  function render() {
+    const v = view(), pages = Math.max(1, Math.ceil(v.length / PER)); page = Math.min(page, pages - 1);
+    const pg = v.slice(page * PER, page * PER + PER);
+    $('dt-body').innerHTML = pg.length ? pg.map(r => `<tr class="${sel.has(r.id) ? 'is-sel' : ''}">
+      <td class="ck"><input type="checkbox" data-id="${r.id}" ${sel.has(r.id) ? 'checked' : ''} aria-label="選取 ${r.code}"></td>
+      <td data-label="密碼序號"><b class="num">${r.code}</b></td><td data-label="遊戲">${r.game}</td><td data-label="狀態">${badge(r.status)}</td>
+      <td data-label="裝置數" class="r num">${r.dev} 台</td><td data-label="剩餘時間" class="r num">${r.left ? r.left + ' 小時' : '—'}</td></tr>`).join('')
+      : `<tr class="dt-empty"><td colspan="6">沒有符合條件的序號。試試清除搜尋或切換到「全部」。</td></tr>`;
+    $('dt-info').textContent = `共 ${v.length} 筆，第 ${page + 1} / ${pages} 頁`;
+    $('dt-prev').disabled = page === 0; $('dt-next').disabled = page >= pages - 1;
+    $('dt-bulk').classList.toggle('is-on', sel.size > 0); $('dt-bulk-n').textContent = sel.size;
+    $('dt-all').checked = pg.length && pg.every(r => sel.has(r.id));
+    document.querySelectorAll('.dt th[data-k]').forEach(th => th.setAttribute('aria-sort', th.dataset.k === sortK ? (sortDir > 0 ? 'ascending' : 'descending') : 'none'));
+  }
+  $('dt-chips').addEventListener('click', e => { const b = e.target.closest('[data-f]'); if (!b) return; filter = b.dataset.f; page = 0; chips(); render(); });
+  $('dt-q').addEventListener('input', e => { q = e.target.value.trim(); page = 0; render(); });
+  document.querySelectorAll('.dt th[data-k] button').forEach(b => b.addEventListener('click', () => { const k = b.parentElement.dataset.k; sortDir = sortK === k ? -sortDir : 1; sortK = k; render(); }));
+  $('dt-body').addEventListener('change', e => { const id = +e.target.dataset.id; e.target.checked ? sel.add(id) : sel.delete(id); render(); });
+  $('dt-all').addEventListener('change', e => { const v = view().slice(page * PER, page * PER + PER); v.forEach(r => e.target.checked ? sel.add(r.id) : sel.delete(r.id)); render(); });
+  $('dt-prev').onclick = () => { page--; render(); }; $('dt-next').onclick = () => { page++; render(); };
+  chips(); render();
+})();
+</script>

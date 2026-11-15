@@ -1,0 +1,53 @@
+<!--
+名稱: 滑動指示頁籤
+分類: 小工具
+說明: 頁籤底下有一條會滑到目前位置的金色指示線，內容切換時淡入。支援方向鍵切換，頁籤太多時在手機上自動換行（不會左右捲動）。
+來源: shadcn/ui tabs（MIT）改寫為原生 HTML
+適用: 通用
+高度: 460
+-->
+<style>
+.tb-list { position: relative; display: flex; flex-wrap: wrap; gap: 4px 24px; border-bottom: 1px solid var(--line); }
+.tb-list button { position: relative; min-height: 44px; font-size: var(--fs-sm); font-weight: 600; color: var(--muted); transition: color .2s; }
+.tb-list button:hover, .tb-list button[aria-selected="true"] { color: var(--text); }
+.tb-ind { position: absolute; bottom: -1px; height: 2px; background: var(--sun); border-radius: 2px; transition: left .3s var(--ease), width .3s var(--ease), top .3s var(--ease); }
+.tb-panel { padding-top: 24px; animation: tb-in .3s var(--ease); }
+.tb-panel[hidden] { display: none; }
+@keyframes tb-in { from { opacity: 0; transform: translateY(4px); } }
+.tb-panel p { color: var(--text-2); max-width: 40em; }
+</style>
+
+<section class="section">
+  <div class="container">
+    <div class="tb" id="tb">
+      <div class="tb-list" role="tablist" aria-label="教學內容">
+        <button role="tab" aria-selected="true" aria-controls="tb-1" id="tb-t1">教學內容</button>
+        <button role="tab" aria-selected="false" aria-controls="tb-2" id="tb-t2" tabindex="-1">準備事項</button>
+        <button role="tab" aria-selected="false" aria-controls="tb-3" id="tb-t3" tabindex="-1">常見錯誤</button>
+        <button role="tab" aria-selected="false" aria-controls="tb-4" id="tb-t4" tabindex="-1">更新紀錄</button>
+        <span class="tb-ind" aria-hidden="true"></span>
+      </div>
+      <div class="tb-panel" role="tabpanel" id="tb-1" aria-labelledby="tb-t1"><p>這份教學帶你從 30 等走到二轉，共 8 個步驟，每步都附截圖與注意事項。</p></div>
+      <div class="tb-panel" role="tabpanel" id="tb-2" aria-labelledby="tb-t2" hidden><p>開始前請準備：紅藥水 200 瓶、藍藥水 100 瓶，以及至少 5 萬楓幣。</p></div>
+      <div class="tb-panel" role="tabpanel" id="tb-3" aria-labelledby="tb-t3" hidden><p>最常見的錯誤是沒先接轉職任務就去打怪，記得先到弓箭手村找赫麗娜。</p></div>
+      <div class="tb-panel" role="tabpanel" id="tb-4" aria-labelledby="tb-t4" hidden><p>11 月 14 日：配合新版本更新第 5 步的地圖位置。</p></div>
+    </div>
+  </div>
+</section>
+
+<script>
+(() => {
+  const root = document.getElementById('tb'), tabs = [...root.querySelectorAll('[role=tab]')], ind = root.querySelector('.tb-ind');
+  const place = t => { ind.style.left = t.offsetLeft + 'px'; ind.style.width = t.offsetWidth + 'px'; ind.style.top = (t.offsetTop + t.offsetHeight - 1) + 'px'; };
+  const pick = t => {
+    tabs.forEach(x => { const on = x === t; x.setAttribute('aria-selected', on); x.tabIndex = on ? 0 : -1; document.getElementById(x.getAttribute('aria-controls')).hidden = !on; });
+    place(t);
+  };
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => pick(t));
+    t.addEventListener('keydown', e => { const d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0; if (d) { const n = tabs[(i + d + tabs.length) % tabs.length]; n.focus(); pick(n); } });
+  });
+  addEventListener('resize', () => place(tabs.find(t => t.getAttribute('aria-selected') === 'true')));
+  document.fonts?.ready.then(() => place(tabs[0])); place(tabs[0]);
+})();
+</script>

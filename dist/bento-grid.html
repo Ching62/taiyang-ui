@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>不規則便當格</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>(function(){try{var t=new URLSearchParams(location.search).get('theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<style>
+/* ==========================================================
+   太陽電玩組件庫 — 設計變數
+   原則：一道光源（晨曦金），其餘全是石墨灰與細線。
+   淺色為預設；系統深色模式或 data-theme="dark" 時切換深色。
+   ========================================================== */
+:root {
+  /* 底色層級：背景 → 面板 → 浮起 */
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --surface-2: #f0f2f5;
+  --raised: #ffffff;
+
+  /* 文字 */
+  --text: #14161b;
+  --text-2: #4a4f5a;
+  --muted: #7a808c;
+
+  /* 線條 */
+  --line: rgba(20, 22, 27, 0.09);
+  --line-strong: rgba(20, 22, 27, 0.16);
+
+  /* 唯一重點色：晨曦金 */
+  --sun: #c7811a;
+  --sun-soft: rgba(199, 129, 26, 0.12);
+  --sun-glow: rgba(233, 162, 59, 0.28);
+  --on-sun: #ffffff;
+
+  /* 狀態色（只用在狀態，不當裝飾） */
+  --up: #1f8a5b;
+  --down: #c8433a;
+  --warn: #b7791f;
+  --info: #2f6fbd;
+
+  /* 字體 */
+  --font: "Manrope", "Noto Sans TC", system-ui, -apple-system, "PingFang TC", "Microsoft JhengHei", sans-serif;
+
+  /* 字級（1.25 比例） */
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-md: 1rem;
+  --fs-lg: 1.25rem;
+  --fs-xl: 1.5625rem;
+  --fs-2xl: 1.953rem;
+  --fs-3xl: clamp(2rem, 4.2vw, 3.05rem);
+  --fs-4xl: clamp(2.4rem, 6vw, 4.2rem);
+
+  /* 間距 */
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px;
+  --s-6: 32px; --s-7: 48px; --s-8: 64px; --s-9: 96px;
+
+  /* 圓角三級：控制項 / 面板 / 大區塊 */
+  --r-sm: 7px;
+  --r-md: 12px;
+  --r-lg: 20px;
+
+  --shadow: 0 1px 2px rgba(20, 22, 27, 0.05), 0 8px 24px -12px rgba(20, 22, 27, 0.12);
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --container: 1120px;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b0d11;
+    --surface: #111419;
+    --surface-2: #171a21;
+    --raised: #1b1f27;
+    --text: #eceef2;
+    --text-2: #b4b9c3;
+    --muted: #7d8390;
+    --line: rgba(255, 255, 255, 0.075);
+    --line-strong: rgba(255, 255, 255, 0.14);
+    --sun: #eaa543;
+    --sun-soft: rgba(234, 165, 67, 0.12);
+    --sun-glow: rgba(234, 165, 67, 0.22);
+    --on-sun: #1a1206;
+    --up: #3fbf86;
+    --down: #ef6a5f;
+    --warn: #e2b04a;
+    --info: #6ea8ef;
+    --shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 12px 32px -16px rgba(0, 0, 0, 0.6);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0b0d11;
+  --surface: #111419;
+  --surface-2: #171a21;
+  --raised: #1b1f27;
+  --text: #eceef2;
+  --text-2: #b4b9c3;
+  --muted: #7d8390;
+  --line: rgba(255, 255, 255, 0.075);
+  --line-strong: rgba(255, 255, 255, 0.14);
+  --sun: #eaa543;
+  --sun-soft: rgba(234, 165, 67, 0.12);
+  --sun-glow: rgba(234, 165, 67, 0.22);
+  --on-sun: #1a1206;
+  --up: #3fbf86;
+  --down: #ef6a5f;
+  --warn: #e2b04a;
+  --info: #6ea8ef;
+  --shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 12px 32px -16px rgba(0, 0, 0, 0.6);
+  color-scheme: dark;
+}
+
+/* ==========================================================
+   太陽電玩組件庫 — 基礎樣式（重設、文字、按鈕、表單、工具類）
+   每個組件都建立在這份之上。
+   ========================================================== */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: var(--fs-md);
+  line-height: 1.7;
+  letter-spacing: 0.01em;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;            /* 保險：永遠不出現橫向捲動 */
+  overflow-wrap: anywhere;     /* 長字自動換行 */
+  word-break: normal;
+}
+img, svg, video, canvas { display: block; max-width: 100%; }
+h1, h2, h3, h4, p { margin: 0; }
+h1, h2, h3, h4 { line-height: 1.25; letter-spacing: -0.01em; font-weight: 650; text-wrap: balance; }
+p { text-wrap: pretty; }
+a { color: inherit; text-decoration: none; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; background: none; border: 0; padding: 0; }
+::selection { background: var(--sun-soft); }
+:focus-visible { outline: 2px solid var(--sun); outline-offset: 2px; border-radius: 4px; }
+.num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+
+.container { width: 100%; max-width: var(--container); margin-inline: auto; padding-inline: 20px; }
+@media (min-width: 768px) { .container { padding-inline: 32px; } }
+.stack > * + * { margin-top: var(--s-4); }
+.muted { color: var(--muted); }
+.text-2 { color: var(--text-2); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* ---------- 按鈕 ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; padding: 0 18px;
+  border-radius: var(--r-sm);
+  font-size: var(--fs-sm); font-weight: 600; letter-spacing: 0.02em;
+  border: 1px solid var(--line-strong);
+  background: var(--surface); color: var(--text);
+  transition: background .2s var(--ease), border-color .2s var(--ease), transform .2s var(--ease), box-shadow .2s var(--ease);
+  white-space: nowrap;
+}
+.btn:hover { background: var(--surface-2); }
+.btn:active { transform: translateY(1px); }
+.btn-primary { background: var(--text); color: var(--bg); border-color: transparent; }
+.btn-primary:hover { background: var(--text); box-shadow: 0 0 0 4px var(--line); }
+.btn-sun { background: var(--sun); color: var(--on-sun); border-color: transparent; }
+.btn-sun:hover { background: var(--sun); box-shadow: 0 6px 24px -6px var(--sun-glow); }
+.btn-ghost { background: transparent; border-color: transparent; color: var(--text-2); }
+.btn-ghost:hover { background: var(--surface-2); color: var(--text); }
+.btn-sm { min-height: 36px; padding: 0 12px; }
+.btn[disabled] { opacity: .5; pointer-events: none; }
+
+/* ---------- 標籤 / 按鍵 ---------- */
+.badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 24px; padding: 0 9px; border-radius: 999px;
+  font-size: var(--fs-xs); font-weight: 600;
+  background: var(--surface-2); color: var(--text-2);
+  border: 1px solid var(--line);
+  white-space: nowrap;
+}
+.badge-sun { background: var(--sun-soft); color: var(--sun); border-color: transparent; }
+.badge-up { color: var(--up); }
+.badge-down { color: var(--down); }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex: none; }
+.kbd {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 22px; height: 22px; padding: 0 6px; border-radius: 5px;
+  font-size: 11px; font-weight: 600; color: var(--muted);
+  background: var(--surface-2); border: 1px solid var(--line); border-bottom-width: 2px;
+}
+
+/* ---------- 表單 ---------- */
+.field { display: grid; gap: 6px; }
+.label { font-size: var(--fs-sm); font-weight: 600; color: var(--text-2); }
+.hint { font-size: var(--fs-xs); color: var(--muted); }
+.input, .select, .textarea {
+  width: 100%; min-height: 44px; padding: 10px 14px;
+  border-radius: var(--r-sm);
+  background: var(--surface); border: 1px solid var(--line-strong);
+  transition: border-color .2s var(--ease), box-shadow .2s var(--ease);
+}
+.textarea { min-height: 110px; resize: vertical; line-height: 1.6; }
+.input::placeholder, .textarea::placeholder { color: var(--muted); }
+.input:focus, .select:focus, .textarea:focus { outline: none; border-color: var(--sun); box-shadow: 0 0 0 4px var(--sun-soft); }
+.field.is-error .input { border-color: var(--down); }
+.field.is-error .hint { color: var(--down); }
+
+/* ---------- 面板 ---------- */
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); }
+.divider { height: 1px; background: var(--line); border: 0; margin: 0; }
+
+/* ---------- 區塊標題 ---------- */
+.section { padding-block: clamp(56px, 9vw, 112px); }
+.section-head { max-width: 640px; margin-bottom: clamp(32px, 5vw, 56px); }
+.section-head h2 { font-size: var(--fs-3xl); }
+.section-head p { margin-top: 14px; color: var(--text-2); font-size: var(--fs-lg); line-height: 1.6; }
+
+/* ---------- 動畫偏好 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
+
+</style>
+</head>
+<body>
+<style>
+.bn-grid { display: grid; gap: 14px; grid-template-columns: 1fr; }
+@media (min-width: 760px) { .bn-grid { grid-template-columns: repeat(6, 1fr); grid-auto-rows: 210px; } .bn-a { grid-column: span 4; grid-row: span 2; } .bn-b { grid-column: span 2; grid-row: span 2; } .bn-c { grid-column: span 3; } .bn-d { grid-column: span 3; } }
+.bn-cell { position: relative; overflow: hidden; border-radius: var(--r-lg); background: var(--surface); border: 1px solid var(--line); padding: 24px; display: flex; flex-direction: column; min-height: 200px; }
+.bn-cell::before { content: ""; position: absolute; inset: 0; background: radial-gradient(280px circle at var(--mx, -999px) var(--my, -999px), var(--sun-soft), transparent 70%); pointer-events: none; transition: opacity .3s; opacity: 0; }
+.bn-cell:hover::before { opacity: 1; }
+.bn-cell h3 { font-size: var(--fs-lg); position: relative; }
+.bn-cell p { color: var(--text-2); font-size: var(--fs-sm); margin-top: 6px; position: relative; max-width: 32em; }
+.bn-vis { position: relative; margin-top: auto; padding-top: 20px; }
+/* A：行事曆 */
+.bn-cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.bn-cal span { height: clamp(30px, 4vw, 40px); border-radius: 8px; background: var(--surface-2); font-size: 11px; color: var(--muted); display: grid; place-items: center; }
+.bn-cal span.on { background: var(--sun-soft); color: var(--sun); font-weight: 700; box-shadow: inset 0 0 0 1px var(--sun); }
+.bn-cal span.hot { background: var(--text); color: var(--bg); font-weight: 700; }
+/* B：數字 */
+.bn-big { font-size: clamp(3rem, 7vw, 4.4rem); font-weight: 750; letter-spacing: -0.04em; line-height: 1; }
+.bn-bars { display: flex; align-items: flex-end; gap: 6px; height: 90px; margin-top: 18px; }
+.bn-bars i { flex: 1; border-radius: 4px 4px 0 0; background: var(--line-strong); }
+.bn-bars i:last-child { background: var(--sun); }
+/* C：聊天 */
+.bn-msg { display: grid; gap: 8px; }
+.bn-msg div { max-width: 80%; padding: 8px 12px; border-radius: 12px; font-size: var(--fs-sm); background: var(--surface-2); }
+.bn-msg div.me { justify-self: end; background: var(--text); color: var(--bg); }
+/* D：標籤 */
+.bn-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+</style>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head"><h2>一個地方，掌握你玩的每款遊戲</h2><p>行事曆、教學、客服都在同一個網站裡。</p></div>
+    <div class="bn-grid">
+      <article class="bn-cell bn-a">
+        <h3>遊戲行事曆</h3><p>新版本、改版活動、限時禮包，每週整理一次，不用再到處爬文。</p>
+        <div class="bn-vis"><div class="bn-cal">
+          <span>1</span><span>2</span><span>3</span><span class="on">4</span><span>5</span><span>6</span><span>7</span>
+          <span>8</span><span>9</span><span class="hot">10</span><span>11</span><span>12</span><span class="on">13</span><span>14</span>
+          <span>15</span><span>16</span><span>17</span><span>18</span><span class="on">19</span><span>20</span><span>21</span>
+        </div></div>
+      </article>
+      <article class="bn-cell bn-b">
+        <h3>本月新增教學</h3><p>涵蓋 5 款遊戲。</p>
+        <div class="bn-vis"><div class="bn-big num">14</div><div class="bn-bars" aria-hidden="true"><i style="height:30%"></i><i style="height:45%"></i><i style="height:38%"></i><i style="height:60%"></i><i style="height:52%"></i><i style="height:92%"></i></div></div>
+      </article>
+      <article class="bn-cell bn-c">
+        <h3>客服即時回覆</h3>
+        <div class="bn-vis bn-msg"><div class="me">序號輸入後顯示過期？</div><div>幫你重新開通了，再試一次。</div></div>
+      </article>
+      <article class="bn-cell bn-d">
+        <h3>支援的遊戲</h3>
+        <div class="bn-vis bn-tags"><span class="badge">楓之谷經典</span><span class="badge">天堂W</span><span class="badge">原神</span><span class="badge">RO 仙境傳說</span><span class="badge">寶可夢</span><span class="badge">+7 款</span></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<script>
+document.querySelectorAll('.bn-cell').forEach(el => el.addEventListener('pointermove', e => {
+  const r = el.getBoundingClientRect(); el.style.setProperty('--mx', e.clientX - r.left + 'px'); el.style.setProperty('--my', e.clientY - r.top + 'px');
+}));
+</script>
+</body>
+</html>

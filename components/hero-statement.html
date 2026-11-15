@@ -1,0 +1,74 @@
+<!--
+名稱: 大字宣言主視覺
+分類: 主視覺
+說明: 靠字的大小與份量撐場面的主視覺，背景是緩慢閃爍的細格點陣（只在上方淡淡出現），適合品牌首頁或活動頁。
+來源: Magic UI flickering-grid（MIT）改寫為原生 Canvas
+適用: 對外
+高度: 640
+-->
+<style>
+.hst { position: relative; overflow: hidden; padding-block: clamp(80px, 14vw, 168px) clamp(56px, 9vw, 112px); }
+.hst canvas { position: absolute; inset: 0; width: 100%; height: 100%; -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 30%, transparent 75%); mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 30%, transparent 75%); pointer-events: none; }
+.hst .container { position: relative; }
+.hst h1 { font-size: clamp(2.6rem, 8.5vw, 6rem); font-weight: 700; letter-spacing: -0.035em; line-height: 1.04; max-width: 11em; }
+.hst-row { margin-top: clamp(28px, 5vw, 48px); display: grid; gap: 24px; align-items: end; }
+@media (min-width: 820px) { .hst-row { grid-template-columns: 1fr auto; } }
+.hst p { max-width: 34em; font-size: var(--fs-lg); color: var(--text-2); line-height: 1.65; }
+.hst-cta { display: flex; flex-wrap: wrap; gap: 12px; }
+.hst-rule { margin-top: clamp(48px, 8vw, 88px); display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); border-top: 1px solid var(--line); }
+.hst-rule div { padding: 18px 0 0; }
+.hst-rule div + div { padding-left: 0; }
+@media (min-width: 640px) { .hst-rule div + div { padding-left: 24px; border-left: 1px solid var(--line); } }
+.hst-rule b { display: block; font-size: var(--fs-2xl); font-weight: 700; letter-spacing: -0.02em; }
+.hst-rule span { font-size: var(--fs-sm); color: var(--muted); }
+</style>
+
+<section class="hst">
+  <canvas id="hst-grid" aria-hidden="true"></canvas>
+  <div class="container">
+    <h1>專心玩遊戲，麻煩的事交給我們。</h1>
+    <div class="hst-row">
+      <p>帳號代購、遊戲教學、版本情報，太陽電玩把每一款遊戲都摸透了再交到你手上。</p>
+      <div class="hst-cta"><a href="#" class="btn btn-primary">看看有哪些遊戲</a><a href="#" class="btn btn-ghost">聯絡客服</a></div>
+    </div>
+    <div class="hst-rule">
+      <div><b class="num">2,400+</b><span>成交筆數</span></div>
+      <div><b class="num">99.6%</b><span>買家好評</span></div>
+      <div><b class="num">12</b><span>款熱門遊戲</span></div>
+    </div>
+  </div>
+</section>
+
+<script>
+(() => {
+  // 改寫自 Magic UI FlickeringGrid（MIT）
+  const c = document.getElementById('hst-grid'), ctx = c.getContext('2d');
+  const size = 3, gap = 7, chance = 0.25, maxOp = 0.28;
+  let cols, rows, sq, dpr, raf, last = 0, color = '';
+  const readColor = () => { color = getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#000'; };
+  const toRGB = col => { const t = document.createElement('canvas').getContext('2d'); t.fillStyle = col; t.fillRect(0,0,1,1); const d = t.getImageData(0,0,1,1).data; return `${d[0]},${d[1]},${d[2]}`; };
+  let rgb = '0,0,0';
+  function setup() {
+    dpr = devicePixelRatio || 1; const r = c.getBoundingClientRect();
+    c.width = r.width * dpr; c.height = r.height * dpr;
+    cols = Math.ceil(r.width / (size + gap)); rows = Math.ceil(r.height / (size + gap));
+    sq = new Float32Array(cols * rows).map(() => Math.random() * maxOp);
+    readColor(); rgb = toRGB(color);
+  }
+  function draw(t) {
+    const dt = (t - last) / 1000; last = t;
+    for (let i = 0; i < sq.length; i++) if (Math.random() < chance * dt) sq[i] = Math.random() * maxOp;
+    ctx.clearRect(0, 0, c.width, c.height);
+    for (let x = 0; x < cols; x++) for (let y = 0; y < rows; y++) {
+      ctx.fillStyle = `rgba(${rgb},${sq[x * rows + y]})`;
+      ctx.fillRect(x * (size + gap) * dpr, y * (size + gap) * dpr, size * dpr, size * dpr);
+    }
+    raf = requestAnimationFrame(draw);
+  }
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  setup();
+  if (still) { last = 0; draw(0); cancelAnimationFrame(raf); } else raf = requestAnimationFrame(draw);
+  addEventListener('resize', () => { setup(); });
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { readColor(); rgb = toRGB(color); });
+})();
+</script>

@@ -1,0 +1,53 @@
+<!--
+名稱: 常見問題手風琴
+分類: 內容區塊
+說明: 點問題展開答案，高度平滑展開（不跳動），一次只開一題，可用鍵盤操作。左側放標題與客服連結。
+來源: shadcn/ui accordion（MIT）改寫為原生 details/summary
+適用: 通用
+高度: 640
+-->
+<style>
+.fq-grid { display: grid; gap: 40px; }
+@media (min-width: 900px) { .fq-grid { grid-template-columns: 0.8fr 1.4fr; gap: 72px; } }
+.fq-list { border-top: 1px solid var(--line); }
+.fq details { border-bottom: 1px solid var(--line); }
+.fq summary { list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 64px; padding: 16px 0; cursor: pointer; font-weight: 600; }
+.fq summary::-webkit-details-marker { display: none; }
+.fq summary:hover { color: var(--sun); }
+.fq-icon { position: relative; width: 14px; height: 14px; flex: none; }
+.fq-icon::before, .fq-icon::after { content: ""; position: absolute; left: 0; top: 6px; width: 14px; height: 1.5px; background: currentColor; border-radius: 2px; transition: transform .3s var(--ease); }
+.fq-icon::after { transform: rotate(90deg); }
+.fq details[open] .fq-icon::after { transform: rotate(0); }
+.fq-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .35s var(--ease); }
+.fq details.is-open .fq-body { grid-template-rows: 1fr; }
+.fq-body > div { overflow: hidden; }
+.fq-body p { padding-bottom: 20px; color: var(--text-2); max-width: 40em; }
+</style>
+
+<section class="section fq">
+  <div class="container fq-grid">
+    <div class="section-head" style="margin-bottom:0"><h2>常見問題</h2><p>找不到答案？<a href="#" style="color:var(--sun);text-decoration:underline;text-underline-offset:3px">直接問客服</a></p></div>
+    <div class="fq-list">
+      <details><summary>密碼序號是什麼？<span class="fq-icon"></span></summary><div class="fq-body"><div><p>就是你的 8591 會員編號。購買後我們會開通，你在教學網站輸入它就能觀看對應的教學。</p></div></div></details>
+      <details><summary>序號可以用多久？<span class="fq-icon"></span></summary><div class="fq-body"><div><p>開通後 24 小時內有效，請在購買當天完成第一次登入。如果還沒開始看就過期了，私訊客服可以重新開通。</p></div></div></details>
+      <details><summary>可以在手機上看嗎？<span class="fq-icon"></span></summary><div class="fq-body"><div><p>可以，教學網站在手機、平板、電腦上都能正常瀏覽。</p></div></div></details>
+      <details><summary>帳號移交後出問題怎麼辦？<span class="fq-icon"></span></summary><div class="fq-body"><div><p>在 8591 確認收貨前，任何問題都可以要求處理。請先截圖保留畫面，再私訊我們。</p></div></div></details>
+    </div>
+  </div>
+</section>
+
+<script>
+(() => {
+  // 平滑展開：攔截 summary 點擊，先播動畫再切換 open
+  const all = [...document.querySelectorAll('.fq details')];
+  all.forEach(d => {
+    d.querySelector('summary').addEventListener('click', e => {
+      e.preventDefault();
+      const opening = !d.open;
+      all.forEach(o => { if (o !== d && o.open) { o.classList.remove('is-open'); setTimeout(() => o.open = false, 350); } });
+      if (opening) { d.open = true; requestAnimationFrame(() => d.classList.add('is-open')); }
+      else { d.classList.remove('is-open'); setTimeout(() => d.open = false, 350); }
+    });
+  });
+})();
+</script>

@@ -1,0 +1,63 @@
+<!--
+名稱: 教學清單列
+分類: 卡片
+說明: 一款遊戲底下的教學清單，每列有標題、難度、閱讀時間、鎖定狀態；可即時搜尋並標示關鍵字，找不到時顯示空狀態。手機上資訊自動換到第二行。
+來源: 參考 Linear 清單與 21st Lists 分類，原創
+適用: 對外
+高度: 680
+-->
+<style>
+.tu-head { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: end; margin-bottom: 20px; }
+.tu-head h2 { font-size: var(--fs-2xl); }
+.tu-search { position: relative; width: min(100%, 300px); }
+.tu-search svg { position: absolute; left: 12px; top: 50%; translate: 0 -50%; width: 16px; height: 16px; stroke: var(--muted); fill: none; stroke-width: 2; }
+.tu-search .input { padding-left: 36px; }
+.tu-list { list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface); overflow: hidden; }
+.tu-row { display: grid; grid-template-columns: 1fr auto; gap: 4px 16px; align-items: center; padding: 16px 18px; border-top: 1px solid var(--line); transition: background .15s; position: relative; }
+.tu-row:first-child { border-top: 0; }
+.tu-row:hover { background: var(--surface-2); }
+.tu-row a::after { content: ""; position: absolute; inset: 0; }
+.tu-title { font-weight: 600; }
+.tu-title mark { background: var(--sun-soft); color: var(--sun); border-radius: 3px; padding: 0 1px; }
+.tu-meta { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: var(--fs-xs); color: var(--muted); }
+@media (min-width: 720px) { .tu-row { grid-template-columns: 1fr auto auto; } .tu-meta { grid-column: auto; } }
+.tu-lock { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-xs); color: var(--muted); white-space: nowrap; }
+.tu-lock svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; }
+.tu-lock.open { color: var(--up); }
+.tu-empty { display: none; padding: 48px 20px; text-align: center; color: var(--muted); }
+.tu-empty b { display: block; color: var(--text); margin-bottom: 4px; }
+</style>
+
+<section class="section">
+  <div class="container">
+    <div class="tu-head">
+      <div><h2>楓之谷經典</h2><p class="muted" style="font-size:var(--fs-sm)">12 份教學 · 最近更新 11 月 14 日</p></div>
+      <label class="tu-search"><span class="sr-only">搜尋教學</span><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input class="input" id="tu-q" type="search" placeholder="搜尋教學，例如：轉職"></label>
+    </div>
+    <ul class="tu-list" id="tu-list">
+      <li class="tu-row"><a href="#" class="tu-title">新手到 30 等最快路線</a><span class="tu-meta"><span>入門</span><span>約 8 分鐘</span></span><span class="tu-lock open"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 017.5-2"/></svg>已解鎖</span></li>
+      <li class="tu-row"><a href="#" class="tu-title">弓箭手二轉完整流程</a><span class="tu-meta"><span>中階</span><span>約 12 分鐘</span></span><span class="tu-lock"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>需密碼序號</span></li>
+      <li class="tu-row"><a href="#" class="tu-title">法師三轉與技能配點</a><span class="tu-meta"><span>中階</span><span>約 15 分鐘</span></span><span class="tu-lock"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>需密碼序號</span></li>
+      <li class="tu-row"><a href="#" class="tu-title">殘暴炎魔打寶地圖整理</a><span class="tu-meta"><span>進階</span><span>約 10 分鐘</span></span><span class="tu-lock"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>需密碼序號</span></li>
+      <li class="tu-row"><a href="#" class="tu-title">楓幣快速累積的五種方法</a><span class="tu-meta"><span>入門</span><span>約 6 分鐘</span></span><span class="tu-lock"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>需密碼序號</span></li>
+      <li class="tu-empty" id="tu-empty"><b>找不到相關教學</b>換個關鍵字試試，或清除搜尋看全部教學。</li>
+    </ul>
+  </div>
+</section>
+
+<script>
+(() => {
+  const q = document.getElementById('tu-q'), rows = [...document.querySelectorAll('#tu-list .tu-row')], empty = document.getElementById('tu-empty');
+  rows.forEach(r => { const t = r.querySelector('.tu-title'); t.dataset.raw = t.textContent; });
+  const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  q.addEventListener('input', () => {
+    const k = q.value.trim(); let n = 0;
+    rows.forEach(r => {
+      const t = r.querySelector('.tu-title'), raw = t.dataset.raw, hit = !k || raw.toLowerCase().includes(k.toLowerCase());
+      r.hidden = !hit; if (hit) n++;
+      t.innerHTML = k && hit ? esc(raw).replace(new RegExp(esc(k).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), m => `<mark>${m}</mark>`) : esc(raw);
+    });
+    empty.style.display = n ? 'none' : 'block';
+  });
+})();
+</script>

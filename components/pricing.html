@@ -1,0 +1,76 @@
+<!--
+名稱: 方案價格表
+分類: 內容區塊
+說明: 三個方案並排（手機自動直排），中間推薦方案用一道金色細框標示而不是整塊變色；上方有「單次／包月」切換，價格會平滑換數字。
+來源: 參考 21st 熱門 Pricing（Efferd、Codehagen）與 Magic UI border-beam，改寫為原生 HTML
+適用: 對外
+高度: 860
+-->
+<style>
+.pr-toggle { display: inline-flex; padding: 4px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--line); margin-bottom: 36px; }
+.pr-toggle button { min-height: 38px; padding: 0 18px; border-radius: 999px; font-size: var(--fs-sm); font-weight: 600; color: var(--text-2); transition: background .2s, color .2s; }
+.pr-toggle button[aria-pressed="true"] { background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
+.pr-save { margin-left: 6px; color: var(--sun); font-size: var(--fs-xs); }
+.pr-grid { display: grid; gap: 16px; }
+@media (min-width: 900px) { .pr-grid { grid-template-columns: repeat(3, 1fr); align-items: stretch; } }
+.pr-card { position: relative; display: flex; flex-direction: column; padding: 28px; border-radius: var(--r-lg); background: var(--surface); border: 1px solid var(--line); }
+.pr-card.is-pick { border-color: transparent; box-shadow: 0 0 0 1px var(--sun), 0 30px 60px -30px var(--sun-glow); }
+.pr-card.is-pick::after { content: ""; position: absolute; inset: -1px; border-radius: inherit; padding: 1px; background: conic-gradient(from var(--a, 0deg), transparent 0 80%, var(--sun) 90%, transparent 100%); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; animation: pr-beam 6s linear infinite; pointer-events: none; }
+@property --a { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+@keyframes pr-beam { to { --a: 360deg; } }
+.pr-name { display: flex; justify-content: space-between; align-items: center; font-weight: 650; }
+.pr-desc { margin-top: 6px; color: var(--muted); font-size: var(--fs-sm); min-height: 3.2em; }
+.pr-price { margin-top: 20px; display: flex; align-items: baseline; gap: 6px; }
+.pr-price b { font-size: 2.6rem; font-weight: 750; letter-spacing: -0.04em; line-height: 1; transition: opacity .2s, transform .2s; }
+.pr-price b.is-swap { opacity: 0; transform: translateY(6px); }
+.pr-price span { color: var(--muted); font-size: var(--fs-sm); }
+.pr-card .btn { margin-top: 24px; width: 100%; }
+.pr-list { margin: 24px 0 0; padding: 20px 0 0; border-top: 1px solid var(--line); list-style: none; display: grid; gap: 12px; font-size: var(--fs-sm); color: var(--text-2); }
+.pr-list li { display: grid; grid-template-columns: 18px 1fr; gap: 10px; }
+.pr-list svg { width: 16px; height: 16px; margin-top: 4px; stroke: var(--sun); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.pr-list li.off { color: var(--muted); } .pr-list li.off svg { stroke: var(--muted); }
+</style>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head"><h2>選擇適合你的教學方案</h2><p>所有方案都包含真人客服。</p></div>
+    <div class="pr-toggle" role="group" aria-label="計價方式">
+      <button aria-pressed="true" data-mode="once">單次購買</button>
+      <button aria-pressed="false" data-mode="month">包月<span class="pr-save">省 30%</span></button>
+    </div>
+    <div class="pr-grid">
+      <div class="pr-card"><div class="pr-name">單份教學</div><p class="pr-desc">只想學一個主題，例如轉職或打寶路線。</p>
+        <div class="pr-price"><b class="num" data-once="150" data-month="105">150</b><span data-unit>元 / 份</span></div>
+        <a href="#" class="btn">購買單份</a>
+        <ul class="pr-list"><li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>一份教學完整內容</li><li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>24 小時觀看</li><li class="off"><svg viewBox="0 0 24 24"><path d="M6 12h12"/></svg>不含版本更新</li></ul>
+      </div>
+      <div class="pr-card is-pick"><div class="pr-name">整款遊戲<span class="badge badge-sun">最多人選</span></div><p class="pr-desc">一款遊戲的全部教學，從新手到進階。</p>
+        <div class="pr-price"><b class="num" data-once="490" data-month="343">490</b><span data-unit>元 / 款</span></div>
+        <a href="#" class="btn btn-sun">購買整款</a>
+        <ul class="pr-list"><li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>該遊戲全部教學</li><li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>7 天觀看</li><li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>改版後免費更新</li></ul>
+      </div>
+      <div class="pr-card"><div class="pr-name">全站通行</div><p class="pr-desc">所有遊戲、所有教學，適合多開或工作室。</p>
+        <div class="pr-price"><b class="num" data-once="1,290" data-month="903">1,290</b><span data-unit>元 / 全站</span></div>
+        <a href="#" class="btn">購買全站</a>
+        <ul class="pr-list"><li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>全部 38 份教學</li><li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>30 天觀看</li><li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>優先客服</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+(() => {
+  const btns = document.querySelectorAll('.pr-toggle button');
+  const units = document.querySelectorAll('[data-unit]');
+  units.forEach(u => { u.dataset.base = u.textContent; });
+  btns.forEach(b => b.addEventListener('click', () => {
+    const mode = b.dataset.mode;
+    btns.forEach(x => x.setAttribute('aria-pressed', x === b));
+    document.querySelectorAll('.pr-price b').forEach(el => {
+      el.classList.add('is-swap');
+      setTimeout(() => { el.textContent = el.dataset[mode]; el.classList.remove('is-swap'); }, 180);
+    });
+    units.forEach(u => { u.textContent = mode === 'month' ? '元 / 月' : u.dataset.base; });
+  }));
+})();
+</script>

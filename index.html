@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>太陽電玩組件庫</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================
+   太陽電玩組件庫 — 設計變數
+   原則：一道光源（晨曦金），其餘全是石墨灰與細線。
+   淺色為預設；系統深色模式或 data-theme="dark" 時切換深色。
+   ========================================================== */
+:root {
+  /* 底色層級：背景 → 面板 → 浮起 */
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --surface-2: #f0f2f5;
+  --raised: #ffffff;
+
+  /* 文字 */
+  --text: #14161b;
+  --text-2: #4a4f5a;
+  --muted: #7a808c;
+
+  /* 線條 */
+  --line: rgba(20, 22, 27, 0.09);
+  --line-strong: rgba(20, 22, 27, 0.16);
+
+  /* 唯一重點色：晨曦金 */
+  --sun: #c7811a;
+  --sun-soft: rgba(199, 129, 26, 0.12);
+  --sun-glow: rgba(233, 162, 59, 0.28);
+  --on-sun: #ffffff;
+
+  /* 狀態色（只用在狀態，不當裝飾） */
+  --up: #1f8a5b;
+  --down: #c8433a;
+  --warn: #b7791f;
+  --info: #2f6fbd;
+
+  /* 字體 */
+  --font: "Manrope", "Noto Sans TC", system-ui, -apple-system, "PingFang TC", "Microsoft JhengHei", sans-serif;
+
+  /* 字級（1.25 比例） */
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-md: 1rem;
+  --fs-lg: 1.25rem;
+  --fs-xl: 1.5625rem;
+  --fs-2xl: 1.953rem;
+  --fs-3xl: clamp(2rem, 4.2vw, 3.05rem);
+  --fs-4xl: clamp(2.4rem, 6vw, 4.2rem);
+
+  /* 間距 */
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px;
+  --s-6: 32px; --s-7: 48px; --s-8: 64px; --s-9: 96px;
+
+  /* 圓角三級：控制項 / 面板 / 大區塊 */
+  --r-sm: 7px;
+  --r-md: 12px;
+  --r-lg: 20px;
+
+  --shadow: 0 1px 2px rgba(20, 22, 27, 0.05), 0 8px 24px -12px rgba(20, 22, 27, 0.12);
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --container: 1120px;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b0d11;
+    --surface: #111419;
+    --surface-2: #171a21;
+    --raised: #1b1f27;
+    --text: #eceef2;
+    --text-2: #b4b9c3;
+    --muted: #7d8390;
+    --line: rgba(255, 255, 255, 0.075);
+    --line-strong: rgba(255, 255, 255, 0.14);
+    --sun: #eaa543;
+    --sun-soft: rgba(234, 165, 67, 0.12);
+    --sun-glow: rgba(234, 165, 67, 0.22);
+    --on-sun: #1a1206;
+    --up: #3fbf86;
+    --down: #ef6a5f;
+    --warn: #e2b04a;
+    --info: #6ea8ef;
+    --shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 12px 32px -16px rgba(0, 0, 0, 0.6);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0b0d11;
+  --surface: #111419;
+  --surface-2: #171a21;
+  --raised: #1b1f27;
+  --text: #eceef2;
+  --text-2: #b4b9c3;
+  --muted: #7d8390;
+  --line: rgba(255, 255, 255, 0.075);
+  --line-strong: rgba(255, 255, 255, 0.14);
+  --sun: #eaa543;
+  --sun-soft: rgba(234, 165, 67, 0.12);
+  --sun-glow: rgba(234, 165, 67, 0.22);
+  --on-sun: #1a1206;
+  --up: #3fbf86;
+  --down: #ef6a5f;
+  --warn: #e2b04a;
+  --info: #6ea8ef;
+  --shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 12px 32px -16px rgba(0, 0, 0, 0.6);
+  color-scheme: dark;
+}
+
+/* ==========================================================
+   太陽電玩組件庫 — 基礎樣式（重設、文字、按鈕、表單、工具類）
+   每個組件都建立在這份之上。
+   ========================================================== */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: var(--fs-md);
+  line-height: 1.7;
+  letter-spacing: 0.01em;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;            /* 保險：永遠不出現橫向捲動 */
+  overflow-wrap: anywhere;     /* 長字自動換行 */
+  word-break: normal;
+}
+img, svg, video, canvas { display: block; max-width: 100%; }
+h1, h2, h3, h4, p { margin: 0; }
+h1, h2, h3, h4 { line-height: 1.25; letter-spacing: -0.01em; font-weight: 650; text-wrap: balance; }
+p { text-wrap: pretty; }
+a { color: inherit; text-decoration: none; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; background: none; border: 0; padding: 0; }
+::selection { background: var(--sun-soft); }
+:focus-visible { outline: 2px solid var(--sun); outline-offset: 2px; border-radius: 4px; }
+.num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+
+.container { width: 100%; max-width: var(--container); margin-inline: auto; padding-inline: 20px; }
+@media (min-width: 768px) { .container { padding-inline: 32px; } }
+.stack > * + * { margin-top: var(--s-4); }
+.muted { color: var(--muted); }
+.text-2 { color: var(--text-2); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* ---------- 按鈕 ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; padding: 0 18px;
+  border-radius: var(--r-sm);
+  font-size: var(--fs-sm); font-weight: 600; letter-spacing: 0.02em;
+  border: 1px solid var(--line-strong);
+  background: var(--surface); color: var(--text);
+  transition: background .2s var(--ease), border-color .2s var(--ease), transform .2s var(--ease), box-shadow .2s var(--ease);
+  white-space: nowrap;
+}
+.btn:hover { background: var(--surface-2); }
+.btn:active { transform: translateY(1px); }
+.btn-primary { background: var(--text); color: var(--bg); border-color: transparent; }
+.btn-primary:hover { background: var(--text); box-shadow: 0 0 0 4px var(--line); }
+.btn-sun { background: var(--sun); color: var(--on-sun); border-color: transparent; }
+.btn-sun:hover { background: var(--sun); box-shadow: 0 6px 24px -6px var(--sun-glow); }
+.btn-ghost { background: transparent; border-color: transparent; color: var(--text-2); }
+.btn-ghost:hover { background: var(--surface-2); color: var(--text); }
+.btn-sm { min-height: 36px; padding: 0 12px; }
+.btn[disabled] { opacity: .5; pointer-events: none; }
+
+/* ---------- 標籤 / 按鍵 ---------- */
+.badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 24px; padding: 0 9px; border-radius: 999px;
+  font-size: var(--fs-xs); font-weight: 600;
+  background: var(--surface-2); color: var(--text-2);
+  border: 1px solid var(--line);
+  white-space: nowrap;
+}
+.badge-sun { background: var(--sun-soft); color: var(--sun); border-color: transparent; }
+.badge-up { color: var(--up); }
+.badge-down { color: var(--down); }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex: none; }
+.kbd {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 22px; height: 22px; padding: 0 6px; border-radius: 5px;
+  font-size: 11px; font-weight: 600; color: var(--muted);
+  background: var(--surface-2); border: 1px solid var(--line); border-bottom-width: 2px;
+}
+
+/* ---------- 表單 ---------- */
+.field { display: grid; gap: 6px; }
+.label { font-size: var(--fs-sm); font-weight: 600; color: var(--text-2); }
+.hint { font-size: var(--fs-xs); color: var(--muted); }
+.input, .select, .textarea {
+  width: 100%; min-height: 44px; padding: 10px 14px;
+  border-radius: var(--r-sm);
+  background: var(--surface); border: 1px solid var(--line-strong);
+  transition: border-color .2s var(--ease), box-shadow .2s var(--ease);
+}
+.textarea { min-height: 110px; resize: vertical; line-height: 1.6; }
+.input::placeholder, .textarea::placeholder { color: var(--muted); }
+.input:focus, .select:focus, .textarea:focus { outline: none; border-color: var(--sun); box-shadow: 0 0 0 4px var(--sun-soft); }
+.field.is-error .input { border-color: var(--down); }
+.field.is-error .hint { color: var(--down); }
+
+/* ---------- 面板 ---------- */
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); }
+.divider { height: 1px; background: var(--line); border: 0; margin: 0; }
+
+/* ---------- 區塊標題 ---------- */
+.section { padding-block: clamp(56px, 9vw, 112px); }
+.section-head { max-width: 640px; margin-bottom: clamp(32px, 5vw, 56px); }
+.section-head h2 { font-size: var(--fs-3xl); }
+.section-head p { margin-top: 14px; color: var(--text-2); font-size: var(--fs-lg); line-height: 1.6; }
+
+/* ---------- 動畫偏好 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
+
+.cat-top { border-bottom: 1px solid var(--line); }
+.cat-top .container { display: flex; align-items: center; gap: 16px; min-height: 64px; flex-wrap: wrap; padding-block: 10px; }
+.cat-brand { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+.cat-mark { width: 24px; height: 24px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #ffd58a, var(--sun) 60%, #8a5410); }
+.cat-theme { margin-left: auto; display: inline-flex; padding: 3px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--line); }
+.cat-theme button { min-height: 32px; padding: 0 12px; border-radius: 999px; font-size: var(--fs-xs); font-weight: 600; color: var(--muted); }
+.cat-theme button[aria-pressed="true"] { background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
+.cat-intro { padding-block: clamp(40px, 7vw, 80px) 28px; }
+.cat-intro h1 { font-size: var(--fs-3xl); letter-spacing: -0.025em; }
+.cat-intro p { margin-top: 12px; color: var(--text-2); max-width: 40em; font-size: var(--fs-lg); line-height: 1.6; }
+.cat-tools { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+.cat-tools .container { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding-block: 12px; }
+.cat-search { flex: 1 1 220px; max-width: 320px; }
+.cat-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.cat-chip { display: inline-flex; align-items: center; gap: 6px; min-height: 34px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line-strong); font-size: var(--fs-sm); color: var(--text-2); }
+.cat-chip span { font-size: 11px; font-weight: 700; color: var(--muted); }
+.cat-chip[aria-pressed="true"] { background: var(--text); color: var(--bg); border-color: transparent; }
+.cat-chip[aria-pressed="true"] span { color: var(--bg); opacity: .7; }
+.cat-group { padding-top: 48px; }
+.cat-group > h2 { font-size: var(--fs-xl); padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+.cat-item { padding-block: 28px; border-bottom: 1px solid var(--line); }
+.cat-head { display: grid; gap: 14px; }
+@media (min-width: 900px) { .cat-head { grid-template-columns: 1fr auto; align-items: start; } }
+.cat-name { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
+.cat-name h3 { font-size: var(--fs-lg); }
+.cat-desc { margin-top: 6px; color: var(--text-2); font-size: var(--fs-sm); max-width: 46em; }
+.cat-src { margin-top: 6px; color: var(--muted); font-size: var(--fs-xs); }
+.cat-id { font-size: var(--fs-xs); color: var(--muted); }
+.cat-act { display: flex; flex-wrap: wrap; gap: 8px; }
+.cat-view { display: inline-flex; padding: 3px; border-radius: var(--r-sm); background: var(--surface-2); border: 1px solid var(--line); }
+.cat-view button { min-height: 30px; padding: 0 10px; border-radius: 5px; font-size: var(--fs-xs); font-weight: 600; color: var(--muted); }
+.cat-view button[aria-pressed="true"] { background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
+.cat-frame { margin-top: 18px; border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; background: var(--bg); transition: max-width .35s var(--ease); margin-inline: auto; max-width: 100%; }
+.cat-frame.is-mobile { max-width: 390px; }
+.cat-frame iframe { display: block; width: 100%; border: 0; background: var(--bg); }
+.cat-empty { padding: 60px 0; text-align: center; color: var(--muted); display: none; }
+.cat-foot { padding-block: 48px; color: var(--muted); font-size: var(--fs-sm); }
+</style>
+</head>
+<body>
+<header class="cat-top"><div class="container">
+  <span class="cat-brand"><span class="cat-mark" aria-hidden="true"></span>太陽電玩組件庫</span>
+  <div class="cat-theme" role="group" aria-label="預覽配色">
+    <button data-theme-set="system" aria-pressed="true">跟隨系統</button><button data-theme-set="light" aria-pressed="false">淺色</button><button data-theme-set="dark" aria-pressed="false">深色</button>
+  </div>
+</div></header>
+
+<section class="container cat-intro">
+  <h1>挑一個喜歡的，告訴我名稱就好</h1>
+  <p>這裡是做網頁時可以直接取用的組件。每個都能切換手機／桌機預覽、開新分頁完整試玩、或複製整份程式碼。</p>
+  <p style="margin-top:20px"><a class="btn btn-sun" href="templates/landing.html" target="_blank" rel="noopener">看整頁組合範例</a></p>
+</section>
+
+<div class="cat-tools"><div class="container">
+  <input class="input cat-search" id="q" type="search" placeholder="搜尋組件，例如：表格、價格、密碼" aria-label="搜尋組件">
+  <div class="cat-chips" id="chips" role="group" aria-label="依分類篩選"></div>
+</div></div>
+
+<main class="container" id="list"></main>
+<p class="container cat-empty" id="empty">沒有符合的組件，換個關鍵字試試。</p>
+<footer class="container cat-foot">組件改寫自 Magic UI、shadcn/ui（皆為 MIT 授權）與 21st 熱門設計參考。原始程式碼保存在儲存庫的 originals 資料夾。</footer>
+
+<script>
+const ITEMS = [{"id": "navbar", "name": "捲動變玻璃導覽列", "cat": "導覽", "desc": "頂部導覽列，往下捲動後變成半透明毛玻璃並出現細線；手機版收成選單按鈕，點開為全寬面板。", "source": "參考 shadcn/ui navigation-menu 與 21st 熱門導覽列，改寫為原生 HTML", "use": "通用", "height": 420}, {"id": "sidebar", "name": "後台側邊欄", "cat": "導覽", "desc": "後台或工具頁的左側選單，分組、目前頁面標示、數字提醒；桌機可收合成圖示列，手機變成從左滑出的抽屜。", "source": "參考 shadcn/ui sidebar-07 區塊，改寫為原生 HTML", "use": "自用", "height": 560}, {"id": "hero-split", "name": "左右分欄主視覺", "cat": "主視覺", "desc": "左邊大標題與一個主要按鈕，右邊放「實際畫面」面板（這裡示範教學步驟視窗），取代置中標題＋三張卡片的罐頭排法。頂部有一道柔和的晨曦光。", "source": "參考 21st 熱門 Split Hero 與 Magic UI animated-shiny-text，改寫為原生 HTML", "use": "對外", "height": 720}, {"id": "hero-statement", "name": "大字宣言主視覺", "cat": "主視覺", "desc": "靠字的大小與份量撐場面的主視覺，背景是緩慢閃爍的細格點陣（只在上方淡淡出現），適合品牌首頁或活動頁。", "source": "Magic UI flickering-grid（MIT）改寫為原生 Canvas", "use": "對外", "height": 640}, {"id": "bento-grid", "name": "不規則便當格", "cat": "內容區塊", "desc": "大小不一的格子拼成一面（一大一中兩小），每格放真的畫面或數據而不是 icon。滑鼠移過時游標周圍有柔光（聚光燈效果），手機上自動變成單欄。", "source": "Magic UI bento-grid、magic-card（MIT）改寫為原生 HTML", "use": "對外", "height": 820}, {"id": "cta-band", "name": "行動呼籲橫幅", "cat": "內容區塊", "desc": "頁尾前的收尾區塊，一句話＋一顆主按鈕，背景是極淡的點陣加一道金光，滑鼠移動時光會跟著。", "source": "Magic UI dot-pattern 與 magic-card（MIT）改寫為原生 HTML", "use": "對外", "height": 440}, {"id": "faq", "name": "常見問題手風琴", "cat": "內容區塊", "desc": "點問題展開答案，高度平滑展開（不跳動），一次只開一題，可用鍵盤操作。左側放標題與客服連結。", "source": "shadcn/ui accordion（MIT）改寫為原生 details/summary", "use": "通用", "height": 640}, {"id": "feature-rows", "name": "特色條列（取代三欄卡片）", "cat": "內容區塊", "desc": "左側固定標題、右側一條條用細線分隔的特色說明，滑過時該列微亮。比三張一樣的 icon 卡片更像專業網站。", "source": "參考 Linear / Vercel 官網排版，原創", "use": "通用", "height": 640}, {"id": "footer", "name": "頁尾", "cat": "內容區塊", "desc": "品牌與一句說明在左，連結分組在右，最底下是版權與營業狀態燈。最下方有一行超大淡色品牌字當收尾。", "source": "參考 21st 熱門 Motion Footer，原創", "use": "通用", "height": 560}, {"id": "logo-marquee", "name": "無限輪播跑馬燈", "cat": "內容區塊", "desc": "一排遊戲名稱或合作夥伴標誌無限水平滑動，兩側漸隱；滑鼠移上去會暫停。也可以改放買家評價。不會造成頁面橫向捲動。", "source": "Magic UI marquee（MIT）改寫為純 CSS", "use": "對外", "height": 300}, {"id": "pricing", "name": "方案價格表", "cat": "內容區塊", "desc": "三個方案並排（手機自動直排），中間推薦方案用一道金色細框標示而不是整塊變色；上方有「單次／包月」切換，價格會平滑換數字。", "source": "參考 21st 熱門 Pricing（Efferd、Codehagen）與 Magic UI border-beam，改寫為原生 HTML", "use": "對外", "height": 860}, {"id": "stats-ticker", "name": "數字跳動統計列", "cat": "內容區塊", "desc": "一排大數字，捲動到畫面中時從 0 平滑跳到目標值（支援千分位與小數），用細線分隔而不是卡片。", "source": "Magic UI number-ticker（MIT）改寫為原生 JS", "use": "通用", "height": 340}, {"id": "steps-timeline", "name": "步驟時間軸", "cat": "內容區塊", "desc": "有順序的流程（購買流程、教學步驟）用直線串起來，捲動時線條會跟著填滿到目前位置。只有真的有先後順序的內容才用數字編號。", "source": "參考 21st Timelines 分類，原創", "use": "通用", "height": 760}, {"id": "testimonials", "name": "買家評價牆", "cat": "內容區塊", "desc": "一則大字精選評價放左邊，其他短評排成瀑布流在右邊，評價上有星等與購買項目。比一排三張一樣的評價卡更有層次。", "source": "參考 21st Testimonials 分類與 Magic UI tweet-card，原創", "use": "對外", "height": 760}, {"id": "spotlight-card", "name": "聚光燈遊戲卡片", "cat": "卡片", "desc": "遊戲選擇卡片，滑鼠在卡片上移動時，邊框與內部會出現跟著游標的柔光（手機上不出現，改成按下時微縮）。封面區用漸層佔位，換成遊戲圖即可。", "source": "Magic UI magic-card（MIT）改寫為原生 HTML", "use": "對外", "height": 620}, {"id": "tutorial-list", "name": "教學清單列", "cat": "卡片", "desc": "一款遊戲底下的教學清單，每列有標題、難度、閱讀時間、鎖定狀態；可即時搜尋並標示關鍵字，找不到時顯示空狀態。手機上資訊自動換到第二行。", "source": "參考 Linear 清單與 21st Lists 分類，原創", "use": "對外", "height": 680}, {"id": "command-palette", "name": "快速搜尋面板（Ctrl＋K）", "cat": "表單", "desc": "按 Ctrl＋K（Mac 為 ⌘＋K）或點搜尋鈕，跳出置中搜尋面板：分組結果、方向鍵上下選、Enter 開啟、Esc 關閉、關鍵字標示、找不到時提示。", "source": "shadcn/ui command（MIT，原為 cmdk）改寫為原生 HTML", "use": "通用", "height": 620}, {"id": "form-controls", "name": "表單元件組", "cat": "表單", "desc": "一份設定表單示範所有基本元件：輸入框、下拉選單、多行文字、開關、核取方塊、單選分段按鈕、滑桿（附數值），含必填與錯誤提示。", "source": "shadcn/ui input、select、switch、checkbox、radio-group、slider、field（MIT）改寫為原生 HTML", "use": "通用", "height": 900}, {"id": "unlock-form", "name": "密碼序號解鎖畫面", "cat": "表單", "desc": "教學頁的解鎖畫面：輸入密碼序號、顯示/隱藏切換、送出中狀態、錯誤提示（輸入框輕微搖晃）、成功時鎖頭打開。示範序號為 453058。", "source": "shadcn/ui login-03 區塊（MIT）與 input 改寫為原生 HTML", "use": "對外", "height": 640}, {"id": "dialog", "name": "對話框與側拉面板", "cat": "回饋提示", "desc": "兩種彈出層：置中確認對話框（危險操作用紅色按鈕）與從右側滑出的編輯面板（手機上從下方升起）。可按 Esc 或點背景關閉，開啟時背景不會捲動。", "source": "shadcn/ui alert-dialog、sheet、drawer（MIT）改寫為原生 dialog 元素", "use": "通用", "height": 520}, {"id": "states", "name": "載入中／空資料／錯誤狀態", "cat": "回饋提示", "desc": "同一個區塊的四種狀態切換示範：骨架畫面（載入中）、有資料、沒有資料（附下一步按鈕）、讀取失敗（說明原因與重試）。每個資料區塊都該備齊這四種。", "source": "shadcn/ui skeleton、empty、alert（MIT）改寫為原生 HTML", "use": "通用", "height": 600}, {"id": "toast", "name": "右下角通知（吐司訊息）", "cat": "回饋提示", "desc": "操作完成後在角落跳出短訊息：成功、錯誤、一般、可「復原」的四種，會自動消失（滑鼠移上去暫停計時），最多同時三則，手機上改在下方置中。", "source": "shadcn/ui sonner（MIT）改寫為原生 HTML", "use": "通用", "height": 460}, {"id": "activity-feed", "name": "即時動態清單", "cat": "資料呈現", "desc": "新事件從上方平滑滑入的動態清單（新訂單、序號登入、客服訊息），超過上限時最舊的淡出。適合放在儀表板側邊。", "source": "Magic UI animated-list（MIT）改寫為原生 JS", "use": "自用", "height": 560}, {"id": "bot-status", "name": "機器人／服務狀態面板", "cat": "資料呈現", "desc": "監控多個機器人或服務是否正常：狀態燈（運作中會有呼吸光暈）、最後回報時間、今日處理量、啟停開關。異常的會排到最上面並說明原因。", "source": "參考 21st Status 分類與 Magic UI animated-circular-progress-bar，原創", "use": "自用", "height": 600}, {"id": "data-table", "name": "可排序篩選資料表", "cat": "資料呈現", "desc": "後台資料表：搜尋、狀態篩選標籤（附數量）、點欄位標題排序、分頁、勾選批次操作。手機上每列自動變成卡片，絕不出現左右捲動。", "source": "shadcn/ui table、dashboard-01 資料表（MIT）改寫為原生 HTML", "use": "自用", "height": 900}, {"id": "kpi-cards", "name": "關鍵數字＋迷你走勢", "cat": "資料呈現", "desc": "儀表板頂部的四個關鍵數字，各自附漲跌幅（綠漲紅跌，另有箭頭符號，不只靠顏色）與迷你走勢線。數字用等寬字，跳動時不會左右晃。", "source": "shadcn/ui dashboard-01 section-cards（MIT）改寫為原生 HTML＋SVG", "use": "自用", "height": 520}, {"id": "backgrounds", "name": "低調背景紋理組", "cat": "文字與背景", "desc": "五種不搶戲的背景：細點陣、細格線、雜訊顆粒、斜紋、晨曦光暈。全部用 CSS 寫成，不需要圖片，深淺色自動切換，邊緣淡出。複製對應的 class 即可用在任何區塊。", "source": "Magic UI dot-pattern、grid-pattern、noise-texture、striped-pattern、light-rays（MIT）改寫為純 CSS", "use": "通用", "height": 760}, {"id": "text-effects", "name": "文字動態效果組", "cat": "文字與背景", "desc": "四種低調的文字效果：模糊淡入（逐行出現）、輪替詞（固定位置換字）、光澤掃過、打字機。整頁只挑一種用，當作開場的唯一亮點。", "source": "Magic UI blur-fade、word-rotate、animated-shiny-text、typing-animation（MIT）改寫為原生 HTML", "use": "對外", "height": 760}, {"id": "copy-code", "name": "一鍵複製區塊", "cat": "小工具", "desc": "放指令、序號、兌換碼的區塊，右上角有複製按鈕，按下後圖示變成打勾並顯示「已複製」。長內容自動換行，不會撐出橫向捲軸。", "source": "Magic UI terminal 與 shadcn/ui 的複製按鈕（MIT）改寫為原生 HTML", "use": "通用", "height": 480}, {"id": "reading-progress", "name": "閱讀進度＋回到頂端", "cat": "小工具", "desc": "長頁面專用：頂端一條細細的閱讀進度線，右下角的回到頂端按鈕外圈是進度環，捲過一段距離才出現。", "source": "Magic UI scroll-progress、animated-circular-progress-bar（MIT）改寫為原生 HTML", "use": "通用", "height": 520}, {"id": "tabs", "name": "滑動指示頁籤", "cat": "小工具", "desc": "頁籤底下有一條會滑到目前位置的金色指示線，內容切換時淡入。支援方向鍵切換，頁籤太多時在手機上自動換行（不會左右捲動）。", "source": "shadcn/ui tabs（MIT）改寫為原生 HTML", "use": "通用", "height": 460}, {"id": "theme-toggle", "name": "深淺色切換", "cat": "小工具", "desc": "三段切換（跟隨系統／淺色／深色），選擇會記住（瀏覽器無法儲存時也不會出錯），切換時整頁顏色平滑過渡。", "source": "Magic UI animated-theme-toggler（MIT）改寫為原生 HTML", "use": "通用", "height": 360}];
+const CATS = ["導覽", "主視覺", "內容區塊", "卡片", "表單", "回饋提示", "資料呈現", "文字與背景", "小工具"];
+(() => {
+  const $ = id => document.getElementById(id);
+  let cat = '全部', q = '', theme = 'system';
+  const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const src = id => `dist/${id}.html` + (theme === 'system' ? '' : `?theme=${theme}`);
+
+  function chips() {
+    const n = c => ITEMS.filter(i => i.cat === c).length;
+    $('chips').innerHTML = ['全部', ...CATS.filter(n)].map(c => `<button class="cat-chip" data-c="${esc(c)}" aria-pressed="${c === cat}">${esc(c)}<span class="num">${c === '全部' ? ITEMS.length : n(c)}</span></button>`).join('');
+  }
+  function render() {
+    const k = q.toLowerCase();
+    const show = ITEMS.filter(i => (cat === '全部' || i.cat === cat) && (!k || [i.name, i.desc, i.id, i.cat, i.use].join(' ').toLowerCase().includes(k)));
+    let html = '';
+    CATS.forEach(c => {
+      const g = show.filter(i => i.cat === c); if (!g.length) return;
+      html += `<section class="cat-group"><h2>${esc(c)}</h2>` + g.map(i => `
+        <article class="cat-item" id="c-${esc(i.id)}">
+          <div class="cat-head">
+            <div><div class="cat-name"><h3>${esc(i.name)}</h3><span class="badge ${i.use === '對外' ? 'badge-sun' : ''}">${esc(i.use || '通用')}</span><span class="cat-id">${esc(i.id)}</span></div>
+              <p class="cat-desc">${esc(i.desc)}</p><p class="cat-src">來源：${esc(i.source)}</p></div>
+            <div class="cat-act">
+              <div class="cat-view" role="group" aria-label="預覽寬度"><button data-view="desk" aria-pressed="true">桌機</button><button data-view="mobile" aria-pressed="false">手機</button></div>
+              <button class="btn btn-sm" data-copy="${esc(i.id)}">複製程式碼</button>
+              <a class="btn btn-sm" href="dist/${esc(i.id)}.html" target="_blank" rel="noopener">開新分頁</a>
+            </div>
+          </div>
+          <div class="cat-frame"><iframe loading="lazy" title="${esc(i.name)} 預覽" data-id="${esc(i.id)}" src="${src(i.id)}" style="height:${+i.height || 520}px"></iframe></div>
+        </article>`).join('') + '</section>';
+    });
+    $('list').innerHTML = html; $('empty').style.display = show.length ? 'none' : 'block';
+  }
+  $('chips').addEventListener('click', e => { const b = e.target.closest('[data-c]'); if (!b) return; cat = b.dataset.c; chips(); render(); });
+  $('q').addEventListener('input', e => { q = e.target.value.trim(); render(); });
+  $('list').addEventListener('click', async e => {
+    const v = e.target.closest('[data-view]');
+    if (v) { const item = v.closest('.cat-item'); item.querySelectorAll('[data-view]').forEach(b => b.setAttribute('aria-pressed', b === v)); item.querySelector('.cat-frame').classList.toggle('is-mobile', v.dataset.view === 'mobile'); return; }
+    const c = e.target.closest('[data-copy]');
+    if (c) {
+      const old = c.textContent;
+      try { const t = await (await fetch(`dist/${c.dataset.copy}.html`)).text(); await navigator.clipboard.writeText(t); c.textContent = '已複製'; }
+      catch { c.textContent = '複製失敗，請改用開新分頁'; }
+      setTimeout(() => c.textContent = old, 1800);
+    }
+  });
+  document.querySelectorAll('[data-theme-set]').forEach(b => b.addEventListener('click', () => {
+    theme = b.dataset.themeSet;
+    document.querySelectorAll('[data-theme-set]').forEach(x => x.setAttribute('aria-pressed', x === b));
+    theme === 'system' ? document.documentElement.removeAttribute('data-theme') : document.documentElement.setAttribute('data-theme', theme);
+    document.querySelectorAll('.cat-frame iframe').forEach(f => f.src = src(f.dataset.id));
+  }));
+  chips(); render();
+})();
+</script>
+</body>
+</html>

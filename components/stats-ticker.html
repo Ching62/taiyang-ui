@@ -1,0 +1,45 @@
+<!--
+名稱: 數字跳動統計列
+分類: 內容區塊
+說明: 一排大數字，捲動到畫面中時從 0 平滑跳到目標值（支援千分位與小數），用細線分隔而不是卡片。
+來源: Magic UI number-ticker（MIT）改寫為原生 JS
+適用: 通用
+高度: 340
+-->
+<style>
+.st { display: grid; grid-template-columns: repeat(2, 1fr); border-block: 1px solid var(--line); }
+@media (min-width: 820px) { .st { grid-template-columns: repeat(4, 1fr); } }
+.st-item { padding: 28px 20px 28px 0; }
+.st-item:nth-child(n) { border-top: 1px solid var(--line); }
+.st-item:nth-child(-n+2) { border-top: 0; }
+@media (min-width: 820px) { .st-item { border-top: 0 !important; padding-left: 24px; border-left: 1px solid var(--line); } .st-item:first-child { border-left: 0; padding-left: 0; } }
+.st-num { font-size: clamp(2rem, 5vw, 3rem); font-weight: 750; letter-spacing: -0.035em; line-height: 1.1; }
+.st-num small { font-size: .5em; font-weight: 600; margin-left: 2px; color: var(--muted); letter-spacing: 0; }
+.st-label { margin-top: 6px; color: var(--text-2); font-size: var(--fs-sm); }
+</style>
+
+<section class="section">
+  <div class="container">
+    <div class="st">
+      <div class="st-item"><div class="st-num num"><span data-to="2418">0</span></div><div class="st-label">累計成交</div></div>
+      <div class="st-item"><div class="st-num num"><span data-to="99.6" data-dec="1">0</span><small>%</small></div><div class="st-label">買家好評率</div></div>
+      <div class="st-item"><div class="st-num num"><span data-to="38">0</span><small>份</small></div><div class="st-label">遊戲教學</div></div>
+      <div class="st-item"><div class="st-num num"><span data-to="47">0</span><small>分鐘</small></div><div class="st-label">平均客服回覆</div></div>
+    </div>
+  </div>
+</section>
+
+<script>
+(() => {
+  const ease = t => 1 - Math.pow(1 - t, 4);
+  const run = el => {
+    const to = +el.dataset.to, dec = +(el.dataset.dec || 0), dur = 1600, t0 = performance.now();
+    const fmt = v => v.toLocaleString('zh-TW', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { el.textContent = fmt(to); return; }
+    const step = now => { const p = Math.min(1, (now - t0) / dur); el.textContent = fmt(to * ease(p)); if (p < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  };
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { run(e.target); io.unobserve(e.target); } }), { threshold: .4 });
+  document.querySelectorAll('[data-to]').forEach(el => io.observe(el));
+})();
+</script>

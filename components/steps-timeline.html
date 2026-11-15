@@ -1,0 +1,46 @@
+<!--
+名稱: 步驟時間軸
+分類: 內容區塊
+說明: 有順序的流程（購買流程、教學步驟）用直線串起來，捲動時線條會跟著填滿到目前位置。只有真的有先後順序的內容才用數字編號。
+來源: 參考 21st Timelines 分類，原創
+適用: 通用
+高度: 760
+-->
+<style>
+.tl { position: relative; max-width: 720px; }
+.tl::before, .tl-fill { content: ""; position: absolute; left: 15px; top: 8px; bottom: 8px; width: 2px; border-radius: 2px; background: var(--line-strong); }
+.tl-fill { background: var(--sun); bottom: auto; height: 0; transition: height .15s linear; }
+.tl-step { position: relative; display: grid; grid-template-columns: 32px 1fr; gap: 20px; padding-bottom: 40px; }
+.tl-step:last-child { padding-bottom: 0; }
+.tl-dot { position: relative; z-index: 1; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font-size: 13px; font-weight: 700; background: var(--bg); border: 2px solid var(--line-strong); color: var(--muted); transition: all .3s var(--ease); }
+.tl-step.is-on .tl-dot { border-color: var(--sun); color: var(--sun); }
+.tl-step h3 { font-size: var(--fs-lg); padding-top: 2px; }
+.tl-step p { margin-top: 6px; color: var(--text-2); }
+.tl-tip { margin-top: 12px; padding: 12px 14px; border-radius: var(--r-sm); background: var(--surface-2); font-size: var(--fs-sm); color: var(--text-2); border-left: 2px solid var(--sun); }
+</style>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head"><h2>購買到開始使用，四個步驟</h2><p>整個流程約 10 分鐘。</p></div>
+    <ol class="tl" id="tl" style="list-style:none;margin:0;padding:0">
+      <li class="tl-fill" aria-hidden="true"></li>
+      <li class="tl-step"><span class="tl-dot">1</span><div><h3>在 8591 下單</h3><p>選好商品後直接下單，款項由平台保管。</p></div></li>
+      <li class="tl-step"><span class="tl-dot">2</span><div><h3>收到密碼序號</h3><p>我們會在訂單留言提供你的密碼序號，就是你的 8591 會員編號。</p><div class="tl-tip">序號當天有效，第一次登入請在購買當天完成。</div></div></li>
+      <li class="tl-step"><span class="tl-dot">3</span><div><h3>進入教學網站</h3><p>選擇遊戲與教學，輸入序號解鎖。</p></div></li>
+      <li class="tl-step"><span class="tl-dot">4</span><div><h3>照步驟操作並確認</h3><p>一切正常後，到 8591 按下確認完成交易。</p></div></li>
+    </ol>
+  </div>
+</section>
+
+<script>
+(() => {
+  const tl = document.getElementById('tl'), fill = tl.querySelector('.tl-fill'), steps = [...tl.querySelectorAll('.tl-step')];
+  const update = () => {
+    const r = tl.getBoundingClientRect(), mid = innerHeight * 0.6;
+    const h = Math.max(0, Math.min(r.height - 16, mid - r.top));
+    fill.style.height = h + 'px';
+    steps.forEach(s => s.classList.toggle('is-on', s.getBoundingClientRect().top < mid));
+  };
+  addEventListener('scroll', update, { passive: true }); addEventListener('resize', update); update();
+})();
+</script>

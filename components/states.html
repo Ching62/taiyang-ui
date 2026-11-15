@@ -1,0 +1,60 @@
+<!--
+名稱: 載入中／空資料／錯誤狀態
+分類: 回饋提示
+說明: 同一個區塊的四種狀態切換示範：骨架畫面（載入中）、有資料、沒有資料（附下一步按鈕）、讀取失敗（說明原因與重試）。每個資料區塊都該備齊這四種。
+來源: shadcn/ui skeleton、empty、alert（MIT）改寫為原生 HTML
+適用: 通用
+高度: 600
+-->
+<style>
+.sx-tabs { display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 4px; border-radius: var(--r-sm); background: var(--surface-2); border: 1px solid var(--line); margin-bottom: 20px; }
+.sx-tabs button { min-height: 36px; padding: 0 14px; border-radius: 5px; font-size: var(--fs-sm); font-weight: 600; color: var(--text-2); }
+.sx-tabs button[aria-pressed="true"] { background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
+.sx-box { border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface); min-height: 280px; }
+.sx-row { display: flex; align-items: center; gap: 14px; padding: 16px 18px; border-top: 1px solid var(--line); }
+.sx-row:first-child { border-top: 0; }
+.sk { border-radius: 6px; background: linear-gradient(90deg, var(--surface-2) 0%, var(--line-strong) 50%, var(--surface-2) 100%) 0 0 / 200% 100%; animation: sk 1.4s infinite linear; }
+@keyframes sk { to { background-position: -200% 0; } }
+.sx-av { width: 36px; height: 36px; border-radius: 50%; flex: none; display: grid; place-items: center; background: var(--surface-2); font-size: 13px; font-weight: 700; }
+.sx-row b { font-size: var(--fs-sm); display: block; }
+.sx-row span.m { font-size: var(--fs-xs); color: var(--muted); }
+.sx-center { display: grid; place-items: center; text-align: center; padding: 48px 24px; min-height: 280px; }
+.sx-ic { width: 48px; height: 48px; border-radius: 14px; margin: 0 auto 16px; display: grid; place-items: center; background: var(--surface-2); border: 1px solid var(--line); }
+.sx-ic svg { width: 22px; height: 22px; stroke: var(--text-2); fill: none; stroke-width: 1.8; stroke-linecap: round; }
+.sx-center h3 { font-size: var(--fs-lg); }
+.sx-center p { margin: 6px auto 20px; max-width: 28em; color: var(--text-2); font-size: var(--fs-sm); }
+.sx-err .sx-ic { background: color-mix(in srgb, var(--down) 12%, transparent); border-color: transparent; }
+.sx-err .sx-ic svg { stroke: var(--down); }
+</style>
+
+<section class="section">
+  <div class="container" style="max-width:720px">
+    <div class="sx-tabs" role="group" aria-label="切換狀態">
+      <button aria-pressed="true" data-s="loading">載入中</button><button aria-pressed="false" data-s="data">有資料</button><button aria-pressed="false" data-s="empty">沒有資料</button><button aria-pressed="false" data-s="error">讀取失敗</button>
+    </div>
+    <div class="sx-box" id="sx-box" aria-live="polite"></div>
+  </div>
+</section>
+
+<template id="sx-loading"><div aria-busy="true" aria-label="載入中">
+  <div class="sx-row"><span class="sk" style="width:36px;height:36px;border-radius:50%"></span><div style="flex:1;display:grid;gap:8px"><span class="sk" style="height:12px;width:40%"></span><span class="sk" style="height:10px;width:25%"></span></div></div>
+  <div class="sx-row"><span class="sk" style="width:36px;height:36px;border-radius:50%"></span><div style="flex:1;display:grid;gap:8px"><span class="sk" style="height:12px;width:55%"></span><span class="sk" style="height:10px;width:30%"></span></div></div>
+  <div class="sx-row"><span class="sk" style="width:36px;height:36px;border-radius:50%"></span><div style="flex:1;display:grid;gap:8px"><span class="sk" style="height:12px;width:35%"></span><span class="sk" style="height:10px;width:20%"></span></div></div>
+</div></template>
+<template id="sx-data"><div>
+  <div class="sx-row"><span class="sx-av">林</span><div><b>453058</b><span class="m">楓之谷經典 · 剩 18 小時</span></div><span class="badge badge-up" style="margin-left:auto"><span class="dot"></span>使用中</span></div>
+  <div class="sx-row"><span class="sx-av">陳</span><div><b>512907</b><span class="m">原神 · 尚未登入</span></div><span class="badge" style="margin-left:auto">未使用</span></div>
+  <div class="sx-row"><span class="sx-av">吳</span><div><b>388214</b><span class="m">天堂W · 已過期</span></div><span class="badge badge-down" style="margin-left:auto">已過期</span></div>
+</div></template>
+<template id="sx-empty"><div class="sx-center"><div><div class="sx-ic"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg></div><h3>還沒有任何密碼序號</h3><p>有買家下單後，在這裡新增序號，他就能觀看教學。</p><button class="btn btn-primary">新增第一個序號</button></div></div></template>
+<template id="sx-error"><div class="sx-center sx-err"><div><div class="sx-ic"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L2 18a2 2 0 001.7 3h16.6a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg></div><h3>序號清單讀取失敗</h3><p>伺服器沒有回應，可能是網路中斷。確認連線後按重新讀取。</p><button class="btn" data-retry>重新讀取</button></div></div></template>
+
+<script>
+(() => {
+  const box = document.getElementById('sx-box'), btns = document.querySelectorAll('.sx-tabs button');
+  const show = s => { box.innerHTML = document.getElementById('sx-' + s).innerHTML; btns.forEach(b => b.setAttribute('aria-pressed', b.dataset.s === s)); };
+  btns.forEach(b => b.addEventListener('click', () => show(b.dataset.s)));
+  box.addEventListener('click', e => { if (e.target.closest('[data-retry]')) { show('loading'); setTimeout(() => show('data'), 1200); } });
+  show('loading');
+})();
+</script>

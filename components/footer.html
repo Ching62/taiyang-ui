@@ -1,0 +1,40 @@
+<!--
+名稱: 頁尾
+分類: 內容區塊
+說明: 品牌與一句說明在左，連結分組在右，最底下是版權與營業狀態燈。最下方有一行超大淡色品牌字當收尾。
+來源: 參考 21st 熱門 Motion Footer，原創
+適用: 通用
+高度: 560
+-->
+<style>
+.ft { border-top: 1px solid var(--line); padding-top: 56px; overflow: hidden; }
+.ft-top { display: grid; gap: 40px; }
+@media (min-width: 860px) { .ft-top { grid-template-columns: 1.3fr 2fr; } }
+.ft-brand b { font-size: var(--fs-lg); }
+.ft-brand p { margin-top: 10px; color: var(--muted); font-size: var(--fs-sm); max-width: 24em; }
+.ft-cols { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; }
+@media (min-width: 600px) { .ft-cols { grid-template-columns: repeat(3, 1fr); } }
+.ft-cols h3 { font-size: var(--fs-sm); color: var(--text); font-weight: 650; }
+.ft-cols ul { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 10px; }
+.ft-cols a { font-size: var(--fs-sm); color: var(--muted); transition: color .2s; }
+.ft-cols a:hover { color: var(--text); }
+.ft-bottom { margin-top: 48px; padding-block: 20px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-size: var(--fs-xs); color: var(--muted); }
+.ft-status { display: inline-flex; align-items: center; gap: 8px; }
+.ft-status .dot { color: var(--up); box-shadow: 0 0 0 3px color-mix(in srgb, var(--up) 20%, transparent); }
+.ft-word { font-size: clamp(4rem, 19vw, 15rem); font-weight: 800; letter-spacing: -0.06em; line-height: .8; text-align: center; white-space: nowrap; color: transparent; -webkit-text-stroke: 1px var(--line-strong); margin-bottom: -0.12em; user-select: none; }
+</style>
+
+<footer class="ft">
+  <div class="container">
+    <div class="ft-top">
+      <div class="ft-brand"><b>太陽電玩</b><p>遊戲帳號代購與教學。所有交易皆透過 8591 寶物交易網履約保證。</p></div>
+      <div class="ft-cols">
+        <div><h3>教學</h3><ul><li><a href="#">全部遊戲</a></li><li><a href="#">新手指南</a></li><li><a href="#">遊戲行事曆</a></li></ul></div>
+        <div><h3>購買</h3><ul><li><a href="#">8591 賣場</a></li><li><a href="#">購買流程</a></li><li><a href="#">常見問題</a></li></ul></div>
+        <div><h3>聯絡</h3><ul><li><a href="#">Facebook 粉絲專頁</a></li><li><a href="#">客服私訊</a></li></ul></div>
+      </div>
+    </div>
+    <div class="ft-bottom"><span>© 2026 太陽電玩 sungame</span><span class="ft-status"><span class="dot"></span>客服在線中</span></div>
+  </div>
+  <div class="ft-word" aria-hidden="true">SUNGAME</div>
+</footer>

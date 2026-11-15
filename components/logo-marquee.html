@@ -1,0 +1,31 @@
+<!--
+名稱: 無限輪播跑馬燈
+分類: 內容區塊
+說明: 一排遊戲名稱或合作夥伴標誌無限水平滑動，兩側漸隱；滑鼠移上去會暫停。也可以改放買家評價。不會造成頁面橫向捲動。
+來源: Magic UI marquee（MIT）改寫為純 CSS
+適用: 對外
+高度: 300
+-->
+<style>
+.mq-sec { padding-block: 56px; }
+.mq-sec h2 { text-align: center; font-size: var(--fs-sm); font-weight: 600; color: var(--muted); letter-spacing: .04em; }
+.mq { --gap: 56px; --dur: 32s; margin-top: 28px; display: flex; overflow: hidden; gap: var(--gap); -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
+.mq-track { display: flex; flex-shrink: 0; gap: var(--gap); align-items: center; animation: mq var(--dur) linear infinite; }
+.mq:hover .mq-track { animation-play-state: paused; }
+.mq.reverse .mq-track { animation-direction: reverse; }
+@keyframes mq { to { transform: translateX(calc(-100% - var(--gap))); } }
+.mq-item { font-size: var(--fs-xl); font-weight: 700; letter-spacing: -0.01em; color: var(--text-2); white-space: nowrap; opacity: .75; transition: opacity .2s, color .2s; }
+.mq-item:hover { opacity: 1; color: var(--text); }
+</style>
+
+<section class="mq-sec">
+  <h2>目前提供教學與帳號的遊戲</h2>
+  <div class="mq" aria-label="遊戲清單">
+    <div class="mq-track">
+      <span class="mq-item">楓之谷經典</span><span class="mq-item">天堂W</span><span class="mq-item">原神</span><span class="mq-item">仙境傳說</span><span class="mq-item">崩壞：星穹鐵道</span><span class="mq-item">寶可夢大集結</span><span class="mq-item">黑色沙漠</span>
+    </div>
+    <div class="mq-track" aria-hidden="true">
+      <span class="mq-item">楓之谷經典</span><span class="mq-item">天堂W</span><span class="mq-item">原神</span><span class="mq-item">仙境傳說</span><span class="mq-item">崩壞：星穹鐵道</span><span class="mq-item">寶可夢大集結</span><span class="mq-item">黑色沙漠</span>
+    </div>
+  </div>
+</section>

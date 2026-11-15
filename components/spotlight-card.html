@@ -1,0 +1,45 @@
+<!--
+名稱: 聚光燈遊戲卡片
+分類: 卡片
+說明: 遊戲選擇卡片，滑鼠在卡片上移動時，邊框與內部會出現跟著游標的柔光（手機上不出現，改成按下時微縮）。封面區用漸層佔位，換成遊戲圖即可。
+來源: Magic UI magic-card（MIT）改寫為原生 HTML
+適用: 對外
+高度: 620
+-->
+<style>
+.sc-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); }
+.sc { position: relative; border-radius: var(--r-lg); padding: 1px; background: radial-gradient(240px circle at var(--x, -999px) var(--y, -999px), var(--sun), var(--line) 60%); transition: transform .2s var(--ease); }
+.sc:active { transform: scale(.985); }
+.sc-in { position: relative; height: 100%; border-radius: calc(var(--r-lg) - 1px); background: var(--surface); overflow: hidden; display: flex; flex-direction: column; }
+.sc-in::before { content: ""; position: absolute; inset: 0; background: radial-gradient(320px circle at var(--x, -999px) var(--y, -999px), var(--sun-soft), transparent 70%); pointer-events: none; z-index: 1; }
+.sc-cover { aspect-ratio: 16 / 9; background: var(--cv); position: relative; }
+.sc-cover::after { content: ""; position: absolute; inset: 0; background: linear-gradient(transparent 40%, var(--surface)); }
+.sc-body { position: relative; z-index: 2; padding: 4px 20px 20px; display: flex; flex-direction: column; flex: 1; }
+.sc-body h3 { font-size: var(--fs-lg); }
+.sc-body p { margin-top: 4px; font-size: var(--fs-sm); color: var(--muted); }
+.sc-foot { margin-top: auto; padding-top: 18px; display: flex; justify-content: space-between; align-items: center; font-size: var(--fs-sm); }
+.sc-foot .go { color: var(--text-2); transition: color .2s, transform .2s; display: inline-flex; gap: 6px; align-items: center; }
+.sc:hover .sc-foot .go { color: var(--sun); }
+.sc a.sc-link { position: absolute; inset: 0; z-index: 3; border-radius: inherit; }
+</style>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head"><h2>選擇你的遊戲</h2><p>點進去查看該遊戲的所有教學。</p></div>
+    <div class="sc-grid">
+      <article class="sc" style="--cv: linear-gradient(135deg, #f4b860, #c4572a 60%, #3a1d2b)"><div class="sc-in"><div class="sc-cover"></div><div class="sc-body"><h3>楓之谷經典</h3><p>轉職、練功路線、打寶地圖</p><div class="sc-foot"><span class="badge num">12 份教學</span><span class="go">查看教學</span></div></div></div><a class="sc-link" href="#" aria-label="查看楓之谷經典教學"></a></article>
+      <article class="sc" style="--cv: linear-gradient(135deg, #8fb4ff, #3a4fb8 55%, #141a3a)"><div class="sc-in"><div class="sc-cover"></div><div class="sc-body"><h3>原神</h3><p>角色養成、深淵配隊、資源規劃</p><div class="sc-foot"><span class="badge num">9 份教學</span><span class="go">查看教學</span></div></div></div><a class="sc-link" href="#" aria-label="查看原神教學"></a></article>
+      <article class="sc" style="--cv: linear-gradient(135deg, #9be3c2, #2f8c74 55%, #0f2a2a)"><div class="sc-in"><div class="sc-cover"></div><div class="sc-body"><h3>天堂W</h3><p>開局規劃、血盟、掛機設定</p><div class="sc-foot"><span class="badge num">7 份教學</span><span class="go">查看教學</span></div></div></div><a class="sc-link" href="#" aria-label="查看天堂W教學"></a></article>
+    </div>
+  </div>
+</section>
+
+<script>
+(() => {
+  if (!matchMedia('(pointer: fine)').matches) return;
+  document.querySelectorAll('.sc').forEach(c => {
+    c.addEventListener('pointermove', e => { const r = c.getBoundingClientRect(); c.style.setProperty('--x', e.clientX - r.left + 'px'); c.style.setProperty('--y', e.clientY - r.top + 'px'); });
+    c.addEventListener('pointerleave', () => { c.style.setProperty('--x', '-999px'); c.style.setProperty('--y', '-999px'); });
+  });
+})();
+</script>

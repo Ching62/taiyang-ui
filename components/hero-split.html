@@ -1,0 +1,66 @@
+<!--
+名稱: 左右分欄主視覺
+分類: 主視覺
+說明: 左邊大標題與一個主要按鈕，右邊放「實際畫面」面板（這裡示範教學步驟視窗），取代置中標題＋三張卡片的罐頭排法。頂部有一道柔和的晨曦光。
+來源: 參考 21st 熱門 Split Hero 與 Magic UI animated-shiny-text，改寫為原生 HTML
+適用: 對外
+高度: 720
+-->
+<style>
+.hs { position: relative; overflow: hidden; padding-block: clamp(56px, 10vw, 128px); }
+.hs::before { content: ""; position: absolute; left: 50%; top: -340px; width: 900px; height: 600px; transform: translateX(-50%); background: radial-gradient(closest-side, var(--sun-glow), transparent); pointer-events: none; opacity: .9; }
+.hs-grid { position: relative; display: grid; gap: clamp(40px, 6vw, 72px); align-items: center; }
+@media (min-width: 960px) { .hs-grid { grid-template-columns: 1.05fr 1fr; } }
+.hs-news { display: inline-flex; align-items: center; gap: 10px; padding: 5px 12px 5px 6px; border-radius: 999px; border: 1px solid var(--line-strong); background: var(--surface); font-size: var(--fs-sm); }
+.hs-news .badge { height: 22px; }
+.hs-shiny { color: var(--text-2); background: linear-gradient(90deg, transparent, var(--text) 50%, transparent) 0 0 / 120px 100% no-repeat; -webkit-background-clip: text; background-clip: text; animation: hs-shine 3.2s infinite var(--ease); }
+.hs-shiny { -webkit-text-fill-color: color-mix(in srgb, var(--text-2) 75%, transparent); }
+@keyframes hs-shine { 0% { background-position: -120px 0; } 60%, 100% { background-position: calc(100% + 120px) 0; } }
+.hs h1 { text-wrap: wrap; margin-top: 22px; font-size: clamp(2.1rem, 4.4vw, 3.3rem); font-weight: 700; letter-spacing: -0.025em; line-height: 1.12; }
+.hs-lead { margin-top: 20px; max-width: 30em; font-size: var(--fs-lg); color: var(--text-2); line-height: 1.65; }
+.hs-cta { margin-top: 32px; display: flex; flex-wrap: wrap; gap: 12px; }
+.hs-proof { margin-top: 36px; display: flex; flex-wrap: wrap; gap: 8px 28px; color: var(--muted); font-size: var(--fs-sm); }
+.hs-proof b { color: var(--text); font-weight: 700; margin-right: 4px; }
+
+.hs-win { background: var(--surface); border: 1px solid var(--line-strong); border-radius: var(--r-lg); box-shadow: var(--shadow), 0 40px 80px -40px var(--sun-glow); overflow: hidden; }
+.hs-bar { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+.hs-bar i { width: 10px; height: 10px; border-radius: 50%; background: var(--line-strong); }
+.hs-bar span { margin-left: 8px; font-size: var(--fs-xs); color: var(--muted); }
+.hs-body { padding: 20px; display: grid; gap: 14px; }
+.hs-title { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.hs-title b { font-size: var(--fs-lg); }
+.hs-progress { height: 4px; border-radius: 4px; background: var(--surface-2); overflow: hidden; }
+.hs-progress > i { display: block; height: 100%; width: 62%; background: var(--sun); border-radius: inherit; }
+.hs-step { display: grid; grid-template-columns: 28px 1fr; gap: 12px; padding: 12px; border-radius: var(--r-md); border: 1px solid var(--line); }
+.hs-step.is-active { border-color: var(--sun); background: var(--sun-soft); }
+.hs-n { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 700; background: var(--surface-2); color: var(--text-2); }
+.hs-step.is-done .hs-n { background: var(--text); color: var(--bg); }
+.hs-step.is-active .hs-n { background: var(--sun); color: var(--on-sun); }
+.hs-step p { font-size: var(--fs-sm); color: var(--muted); margin-top: 2px; }
+.hs-step b { font-size: var(--fs-sm); }
+</style>
+
+<section class="hs">
+  <div class="container hs-grid">
+    <div>
+      <a href="#" class="hs-news"><span class="badge badge-sun">新教學</span><span class="hs-shiny">楓之谷經典 職業轉職全攻略已上線</span></a>
+      <h1>照著做就會的遊戲教學，<br>從第一步帶你到畢業</h1>
+      <p class="hs-lead">每份教學都由太陽電玩實際操作整理，步驟附截圖與注意事項。購買後輸入密碼序號，立即開始。</p>
+      <div class="hs-cta">
+        <a href="#" class="btn btn-sun">瀏覽全部教學</a>
+        <a href="#" class="btn">我已有密碼序號</a>
+      </div>
+      <div class="hs-proof"><span><b class="num">38</b>份教學</span><span><b class="num">12</b>款遊戲</span><span><b>每週</b>更新</span></div>
+    </div>
+    <div class="hs-win" aria-label="教學畫面示意">
+      <div class="hs-bar"><i></i><i></i><i></i><span>楓之谷經典 · 新手到 30 等</span></div>
+      <div class="hs-body">
+        <div class="hs-title"><b>新手到 30 等路線</b><span class="muted num" style="font-size:var(--fs-sm)">5 / 8 步</span></div>
+        <div class="hs-progress"><i></i></div>
+        <div class="hs-step is-done"><span class="hs-n">✓</span><div><b>建立角色與選擇伺服器</b><p>選人少的伺服器，練功點不用搶。</p></div></div>
+        <div class="hs-step is-done"><span class="hs-n">✓</span><div><b>彩虹島任務一次接完</b><p>依序接取，獎勵可直接升到 10 等。</p></div></div>
+        <div class="hs-step is-active"><span class="hs-n">5</span><div><b>弓箭手村轉職路線</b><p>先買兩組藥水，路上不回城。</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
