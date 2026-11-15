@@ -33,5 +33,19 @@
 3. 執行 `python3 build.py` 重新產生 `dist/`、`templates/`、`components.json`、`index.html`。
 4. 提交並推送。
 
+## 缺組件時去哪裡找（依優先順序）
+這些都是公開的 GitHub 專案，不需要權限，直接讀取或 clone 即可。拿來後一律改成本組件庫的設計變數（顏色、字體、間距），再照「新增組件」存回來，不要原樣混用不同風格。
+
+| 來源 | 授權 | 格式 | 適合找什麼 |
+|---|---|---|---|
+| shadcn/ui（github.com/shadcn-ui/ui） | MIT | React | 表單、對話框、表格、後台區塊等基礎元件 |
+| Magic UI（github.com/magicuidesign/magicui） | MIT | React | 低調的動態效果、背景、文字效果 |
+| HyperUI（github.com/markmead/hyperui） | MIT | 純 HTML＋Tailwind | 首頁區塊、後台版面，最接近我們的單檔 HTML 格式 |
+| Origin UI（github.com/origin-space/originui） | MIT | React | 大量輸入框、按鈕、選單、表格變化 |
+| Uiverse（github.com/uiverse-io/galaxy） | MIT | 純 HTML/CSS | 按鈕、載入動畫、開關；社群投稿品質不一，只挑低調的 |
+| Preline（github.com/htmlstreamofficial/preline） | 免費版 MIT，進階版付費 | HTML＋Tailwind | 只用免費版元件，付費版不碰 |
+
+Tailwind 格式的元件要把 class 換成原生 CSS 再存，組件庫不依賴 Tailwind。
+
 ## 21st
-21st.dev 可免費搜尋組件，但免費帳號每天只能取得 2 次組件程式碼。優先從原本就公開的開源專案（Magic UI、shadcn/ui、Origin UI 等）取得，真的只有 21st 有的才動用每日額度。
+21st.dev 可免費搜尋組件，但免費帳號每天只能取得 2 次組件程式碼。優先從上面的開源專案取得，真的只有 21st 有的才動用每日額度。
